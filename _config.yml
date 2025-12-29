@@ -1,0 +1,14 @@
+title: Tofutopia
+description: Your gateway to information and community
+url: "https://tofutopia.net"
+theme: minima
+
+# Pagination
+paginate: 5
+paginate_path: "/blog/page:num/"
+
+# Collections
+collections:
+  posts:
+    output: true
+    permalink: /blog/:year/:month/:day/:title/
