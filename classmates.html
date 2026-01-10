@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHS Class of 2006 - Classmates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #191c40;
+            color: #c3c0c0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #404472;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #b29758;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #c3c0c0;
+            font-weight: 400;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .group {
+            display: flex;
+            line-height: 28px;
+            align-items: center;
+            position: relative;
+            max-width: 190px;
+        }
+
+        .search-box {
+            font-family: "Montserrat", sans-serif;
+            width: 100%;
+            height: 45px;
+            padding-left: 2.5rem;
+            box-shadow: 0 0 0 1.5px #2b2c37, 0 0 25px -17px #000;
+            border: 0;
+            border-radius: 12px;
+            background-color: #16171d;
+            outline: none;
+            color: #bdbecb;
+            transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+            cursor: text;
+            z-index: 0;
+        }
+
+        .search-box::placeholder {
+            color: #bdbecb;
+        }
+
+        .search-box:hover {
+            box-shadow: 0 0 0 2.5px #2f303d, 0px 0px 25px -15px #000;
+        }
+
+        .search-box:active {
+            transform: scale(0.95);
+        }
+
+        .search-box:focus {
+            box-shadow: 0 0 0 2.5px #2f303d;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            fill: #bdbecb;
+            width: 1rem;
+            height: 1rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 190px);
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            justify-content: center;
+        }
+        
+        .flip-card {
+            background-color: transparent;
+            width: 190px;
+            height: 264px;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+        
+        .flip-card-front {
+            box-shadow: 0px 1px 13px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 120ms;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            padding: 0.5em;
+        }
+        
+        .flip-card-front:active {
+            transform: scale(0.98);
+        }
+        
+        .card-content-front {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .image-container {
+            background: #f1f1f1;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+        
+        .profile-initials {
+            font-size: 3em;
+            font-weight: 700;
+            color: #b29758;
+        }
+        
+        .card-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #000;
+            text-align: left;
+            margin-top: 10px;
+            padding: 0 0.625em;
+        }
+
+        .card-quote {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.75em;
+            color: #666;
+            font-style: italic;
+            text-align: left;
+            margin-top: 5px;
+            padding: 0 0.625em;
+        }
+        
+        .flip-card-back {
+            background: linear-gradient(135deg, #404472 0%, #5c5f7c 50%, #b29758 100%);
+            color: white;
+            transform: rotateY(180deg);
+            box-shadow: 0px 1px 13px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 12px;
+        }
+        
+        .back-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .back-location {
+            font-size: 0.8em;
+            color: #c3c0c0;
+            margin-bottom: 10px;
+        }
+        
+        .contact-links-back {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .contact-link-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-link-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cta {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .cta span {
+            padding-bottom: 7px;
+            letter-spacing: 4px;
+            font-size: 14px;
+            padding-right: 15px;
+            text-transform: uppercase;
+        }
+
+        .cta svg {
+            transform: translateX(-8px);
+            transition: all 0.3s ease;
+        }
+
+        .cta:hover svg {
+            transform: translateX(0);
+        }
+
+        .cta:active svg {
+            transform: scale(0.9);
+        }
+
+        .hover-underline-animation {
+            position: relative;
+            color: #c3c0c0;
+            padding-bottom: 20px;
+        }
+
+        .hover-underline-animation:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #b29758;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .cta:hover .hover-underline-animation:after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 1.5em;
+            color: #b29758;
+            padding: 50px;
+        }
+        
+        .no-results {
+            text-align: center;
+            font-size: 1.3em;
+            color: #5c5f7c;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BHS Class of 2006</h1>
+        <p>Stalk your ex-prom date</p>
+    </div>
+    
+    <div class="search-container">
+        <div class="group">
+            <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24">
+                <g>
+                    <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                </g>
+            </svg>
+            <input type="text" class="search-box" id="searchBox" placeholder="Search name">
+        </div>
+    </div>
+    
+    <div id="cardsContainer" class="cards-container">
+        <div class="loading">Loading classmates...</div>
+    </div>
+    
+    <div class="back-link">
+        <button class="cta" onclick="window.location.href='bhs06.html'">
+            <span class="hover-underline-animation">Home</span>
+            <svg viewBox="0 0 46 16" height="10" width="30" xmlns="http://www.w3.org/2000/svg" id="arrow-horizontal">
+                <path transform="translate(30)" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" data-name="Path 10" id="Path_10" fill="#c3c0c0"></path>
+            </svg>
+        </button>
+    </div>
+        <div class="back-link">
+        <button class="cta" onclick="window.location.href='page1.html'">
+            <span class="hover-underline-animation">Complain About Something</span>
+            <svg viewBox="0 0 46 16" height="10" width="30" xmlns="http://www.w3.org/2000/svg" id="arrow-horizontal">
+                <path transform="translate(30)" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" data-name="Path 10" id="Path_10" fill="#c3c0c0"></path>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        let allContacts = [];
+        
+        // Fetch and parse CSV
+        fetch('contacts.csv')
+            .then(response => response.text())
+            .then(csvData => {
+                Papa.parse(csvData, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        allContacts = results.data;
+                        displayContacts(allContacts);
+                    }
+                });
+            })
+            .catch(error => {
+                document.getElementById('cardsContainer').innerHTML = 
+                    '<div class="no-results">Error loading contacts. Make sure contacts.csv exists in your repository.</div>';
+                console.error('Error:', error);
+            });
+        
+        // Display contacts
+        function displayContacts(contacts) {
+            const container = document.getElementById('cardsContainer');
+            
+            if (contacts.length === 0) {
+                container.innerHTML = '<div class="no-results">No classmates found.</div>';
+                return;
+            }
+            
+            container.innerHTML = contacts.map(contact => {
+                const initials = contact.Name ? contact.Name.split(' ').map(n => n[0]).join('') : '?';
+                const quote = contact['Updated Yearbook Quote'] || 'No quote available';
+                
+                return `
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-content-front">
+                                    <div class="image-container">
+                                    <img src="images/${contact.Name.toLowerCase().replace(/\s+/g, '-')}.jpg" 
+                                        alt="${contact.Name}" 
+                                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;">
+                                    <div class="profile-initials" style="display: none;">${initials}</div>                                    </div>
+                                    <div class="card-title">${contact.Name || 'Unknown'}</div>
+                                    <div class="card-quote">"${quote}"</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flip-card-back">
+                                <div class="back-title">${contact.Name || 'Unknown'}</div>
+                                <div class="back-location">📍 ${contact.City || 'Unknown'}</div>
+                                
+                                <div class="contact-links-back">
+                                    ${contact.Email ? `
+                                        <a href="mailto:${contact.Email}" class="contact-link-back">
+                                            <span>✉️</span>
+                                            <span>Email</span>
+                                        </a>
+                                    ` : ''}
+                                    
+                                    ${contact.IG ? `
+                                        <a href="https://instagram.com/${contact.IG}" target="_blank" class="contact-link-back">
+                                            <span>📷</span>
+                                            <span>@${contact.IG}</span>
+                                        </a>
+                                    ` : ''}
+                                    
+                                    ${contact.Article1 ? `
+                                        <a href="${contact.Article1}" target="_blank" class="contact-link-back">
+                                            <span>📄</span>
+                                            <span>Article 1</span>
+                                        </a>
+                                    ` : ''}
+                                    
+                                    ${contact.Article2 ? `
+                                        <a href="${contact.Article2}" target="_blank" class="contact-link-back">
+                                            <span>📄</span>
+                                            <span>Article 2</span>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allContacts.filter(contact => {
+                const name = (contact.Name || '').toLowerCase();
+                const city = (contact.City || '').toLowerCase();
+                return name.includes(searchTerm) || city.includes(searchTerm);
+            });
+            displayContacts(filtered);
+        });
+    </script>
+</body>
+</html>
