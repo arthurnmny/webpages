@@ -1,116 +1,768 @@
+
+<artifact identifier="Go Spartans!" type="text/html" title="Go Spartans!">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tofutopia - Welcome</title>
+    <title>Bainbridge High School Reunion</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --color-primary: #191c40;
+            --color-secondary: #c3c0c0;
+            --color-accent: #b29758;
+            --color-text: #1a1a1a;
+            --color-text-light: #b29758;
+            --max-width: 1440px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 96px;
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+/* ===== RESET & BASE ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: var(--color-text);
+        background-color: var(--color-primary);
+        overflow-x: hidden;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* ===== HEADER & NAVIGATION ===== */
+    .header {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        align-content: flex-start;
+        height: 70vw;
+        min-height: 400px;
+        max-height: 750px;
+        min-width: 300px;
+        color: #eee;
+        border-radius: 0 0 20px 20px;
+        text-shadow: 0 2px 6px #000a;
+        z-index: 1000;
+    }
+
+    .header:after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.12) 40%, rgba(27,32,48,1) 100%);
+    }
+
+    .header:before {
+        content: "";
+        width: 100%;
+        height: 200%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translateZ(0);
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        background: #1B2030 url(https://images.unsplash.com/photo-1662371256693-040cd35c0956?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) 50% 0 no-repeat;
+        background-size: 100%;
+        background-attachment: fixed;
+        animation: grow 360s linear 10ms infinite;
+        transition: all 0.4s ease-in-out;
+        z-index: -2;
+    }
+
+    .header a {
+        color: #eee;
+    }
+
+    .header-content {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-md);
+        z-index: 100;
+        position: relative;
+    }
+
+    .header-welcome {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 80%);
+        font-size: clamp(2rem, 6vw, 4rem);
+        font-weight: 700;
+        color: #eee;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        letter-spacing: 0.1em;
+        z-index: 50;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .nav-desktop {
+        display: none;
+        gap: var(--spacing-md);
+    }
+
+    .nav-link {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: 8px;
+        transition: background-color 0.3s;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(11, 51, 51, 0.1);
+    }
+
+    .btn-primary {
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        padding: 12px 24px;
+        border-radius: 50px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    /* ===== HAMBURGER MENU ===== */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        width: 30px;
+    }
+
+    .hamburger span {
+        height: 2px;
+        background-color: var(--color-primary);
+        transition: all 0.3s;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 400px;
+        height: 100vh;
+        background-color: var(--color-secondary);
+        padding: var(--spacing-lg) var(--spacing-md);
+        transition: right 0.4s ease;
+        z-index: 2000;
+    }
+
+    .mobile-menu.active {
+        right: 0;
+    }
+
+    .mobile-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+        z-index: 1999;
+    }
+
+    .mobile-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-nav {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xl);
+    }
+
+    .mobile-nav-link {
+        padding: var(--spacing-sm);
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(11, 51, 51, 0.1);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-lg) var(--spacing-md);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        max-width: var(--max-width);
+        text-align: center;
+        position: relative;
+        z-index: 10;
+    }
+
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 8rem);
+        line-height: 0.9;
+        font-weight: 700;
+        color: var(--color-text-light);
+        margin-bottom: var(--spacing-md);
+        text-transform: uppercase;
+    }
+
+    .outline-text {
+        -webkit-text-stroke: 2px var(--color-text-light);
+        text-stroke: 2px var(--color-text-light);
+        -webkit-text-fill-color: transparent;
+        text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 2vw, 1.5rem);
+        color: var(--color-secondary);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+        padding: var(--spacing-xl) var(--spacing-md);
+        max-width: var(--max-width);
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        margin-bottom: var(--spacing-lg);
+        text-transform: uppercase;
+        color: var(--color-text-light);
+    }
+
+    /* ===== GRID LAYOUTS ===== */
+    .grid {
+        display: grid;
+        gap: var(--spacing-md);
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .card {
+        background-color: var(--color-secondary);
+        padding: var(--spacing-md);
+        border-radius: 16px;
+        transition: transform 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height:100%;
+        background-image: url('assets/helmet.png');
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: contain;
+        opacity: .3;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .card > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+    }
+
+    .card-title {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin-bottom: var(--spacing-xsm);
+        color: var(--color-primary);
+    }
+
+    .card-text {
+        color: var(--color-text);
+        line-height: 1.6;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    /* ===== CTA BUTTON ===== */
+    .cta {
+        position: relative;
+        margin: auto;
+        padding: 12px 18px;
+        transition: all 0.2s ease;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    .cta:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        border-radius: 50px;
+        background: #b29758;
+        width: 45px;
+        height: 45px;
+        transition: all 0.3s ease;
+    }
+
+    .cta span {
+        position: relative;
+        font-family: "Ubuntu", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #234567;
+    }
+
+    .cta svg {
+        position: relative;
+        top: 0;
+        margin-left: 10px;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke: #234567;
+        stroke-width: 2;
+        transform: translateX(-5px);
+        transition: all 0.3s ease;
+    }
+
+    .cta:hover:before {
+        width: 100%;
+        background: #b29758;
+    }
+
+    .cta:hover svg {
+        transform: translateX(0);
+    }
+
+    .cta:active {
+        transform: scale(0.95);
+    }
+
+    /* ===== PRIMARY BUTTON ===== */
+    .primary-button {
+        font-family: 'Ropa Sans', sans-serif;
+        color: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 0.05rem;
+        border: 1px solid #0E1822;
+        padding: 0.8rem 2.1rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 531.28 200'%3E%3Cdefs%3E%3Cstyle%3E .shape %7B fill: %23FF4655 %7D %3C/style%3E%3C/defs%3E%3Cg id='Layer_2' data-name='Layer 2'%3E%3Cg id='Layer_1-2' data-name='Layer 1'%3E%3Cpolygon class='shape' points='415.81 200 0 200 115.47 0 531.28 0 415.81 200' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E%0A");
+        background-color: #0E1822;
+        background-size: 200%;
+        background-position: 200%;
+        background-repeat: no-repeat;
+        transition: 0.3s ease-in-out;
+        transition-property: background-position, border, color;
+        position: relative;
+        z-index: 1;
+    }
+
+    .primary-button:hover {
+        border: 1px solid #b29758;
+        color: white;
+        background-position: 40%;
+    }
+
+    .primary-button:before {
+        content: "";
+        position: absolute;
+        background-color: #0E1822;
+        width: 0.2rem;
+        height: 0.2rem;
+        top: -1px;
+        left: -1px;
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .primary-button:hover:before {
+        background-color: white;
+    }
+
+    .primary-button:hover:after {
+        background-color: white;
+    }
+
+    .primary-button:after {
+        content: "";
+        position: absolute;
+        background-color: #b29758;
+        width: 0.3rem;
+        height: 0.3rem;
+        bottom: -1px;
+        right: -1px;
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .button-borders {
+        position: relative;
+        width: fit-content;
+        height: fit-content;
+    }
+
+    .button-borders:before {
+        content: "";
+        position: absolute;
+        width: calc(100% + 0.5em);
+        height: 50%;
+        left: -0.3em;
+        top: -0.3em;
+        border: 1px solid #0E1822;
+        border-bottom: 0px;
+    }
+
+    .button-borders:after {
+        content: "";
+        position: absolute;
+        width: calc(100% + 0.5em);
+        height: 50%;
+        left: -0.3em;
+        bottom: -0.3em;
+        border: 1px solid #0E1822;
+        border-top: 0px;
+        z-index: 0;
+    }
+
+    .shape {
+        fill: #0E1822;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+        background-color: var(--color-secondary);
+        padding: var(--spacing-lg) var(--spacing-md);
+        margin-top: var(--spacing-xl);
+        border-radius: 16px 16px 0 0;
+    }
+
+    .footer-content {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .footer-links {
+        display: flex;
+        gap: var(--spacing-md);
+        flex-wrap: wrap;
+    }
+
+    .social-links {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-4px);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 768px) {
+        .header {
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .nav-desktop {
             display: flex;
+        }
+
+        .hamburger {
+            display: none;
+        }
+
+        .footer-content {
+            flex-direction: row;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
-        
-        .container {
-            max-width: 800px;
-            background: white;
-            padding: 60px 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #2c3e50;
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        h2 {
-            color: #34495e;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-        
-        p {
-            margin-bottom: 15px;
-            color: #555;
-            font-size: 1.1em;
-        }
-        
-        .tagline {
-            text-align: center;
-            font-style: italic;
-            color: #7f8c8d;
-            font-size: 1.2em;
-            margin-bottom: 40px;
-        }
-        
+    }
+
+    @media (min-width: 1024px) {
         .section {
-            margin-bottom: 30px;
+            padding: var(--spacing-xl) var(--spacing-lg);
         }
-        
-        .links {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid #ecf0f1;
-            text-align: center;
-        }
-        
-        .links a {
-            display: inline-block;
-            margin: 10px 15px;
-            padding: 12px 30px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: background 0.3s;
-            font-weight: 600;
-        }
-        
-        .links a:hover {
-            background: #2980b9;
-        }
-    </style>
+    }
+</style>
+
 </head>
 <body>
-    <div class="container">
-        <h1>Tofutopia</h1>
-        <p class="tagline">Your data laundrymat</p>
-        
-        <div class="section">
-            <h2>Welcome</h2>
-            <p>Hey this is Arthur. This is now my personal page, I used to have my business page here, but I don't really want to do that right now.</p>
-        </div>
-        
-        <div class="section">
-            <h2>About</h2>
-            <p>Our mission is to help businesses unlock the true value of their data by transforming chaos into clarity through meticulous cleaning, standardization, and organization. We believe every company deserves accurate, reliable data they can trust, without the headache of doing it themselves. We exist to be the behind-the-scenes partner that makes your data work for you, not against you.</p>
-        </div>
-        
-        <div class="section">
-            <h2>What We Offer</h2>
-            <p>Tofutopia is a specialized service that cleans, standardizes, and organizes messy business data to make it usable and accurate. We transform cluttered spreadsheets, duplicate records, and inconsistent formats into clean, structured databases that businesses can actually rely on for decision-making. Think of it as washing your dirty data—we remove the stains, fold it neatly, and return it ready to use.</p>
-        </div>
-        
-        <div class="links">
-            <a href="bhs06.html">Class Reunion Info</a>
-            <a href="mailto:arthur12yang@gmail.com">Contact Us</a>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-welcome">WELCOME BACK</div>
+            <div class="logo">BHS'06</div>
+            <!-- Desktop Navigation -->
+            <nav class="nav-desktop">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#services" class="nav-link">Information</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+
+        <!-- Mobile Hamburger -->
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </div>
+</header>
+
+<!-- Mobile Menu -->
+<div class="mobile-overlay" onclick="toggleMenu()"></div>
+<div class="mobile-menu">
+    <nav class="mobile-nav">
+        <a href="#home" class="mobile-nav-link" onclick="toggleMenu()">Home</a>
+        <a href="#about" class="mobile-nav-link" onclick="toggleMenu()">Intro</a>
+        <a href="#services" class="mobile-nav-link" onclick="toggleMenu()">Info</a>
+        <a href="#contact" class="mobile-nav-link" onclick="toggleMenu()">Contact</a>
+        <button class="btn-primary" style="margin-top: 20px;">Get Started</button>
+    </nav>
+</div>
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <span class="outline-text">BAINBRIDGE HIGH SCHOOL</span><br>
+            20 YEAR REUNION
+        </h1>
+        <p class="hero-subtitle">
+            A gathering of beautiful, super smart, talented, and humble individuals
+        </p>
+        <button class="btn-primary" style="font-size: 1.2rem; padding: 16px 32px;">
+            Learn More
+        </button>
+    </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="section" id="about">
+    <h2 class="section-title">
+       WELCOME <span class="outline-text">back</span>
+    </h2>
+    <div class="grid">
+        <div class="card">
+            <h3 class="card-title">What to Expect</h3>
+            <p class="card-text">
+                Reconnect with classmates from two decades ago.
+Share stories and memories from our high school days.
+Celebrate our accomplishments and journeys since graduation.
+Food, drinks, and entertainment.
+Photo opportunities and memory sharing.
+Catch up on where life has taken us all.
+            </p>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Updates Coming Soon</h3>
+            <p class="card-text">
+                We're working on finalizing all the details for our reunion.<br> Check back here for updates on:
+<br>
+Exact date and time.<br>
+Venue location and details.<br>
+Ticket information and pricing<br>
+Hotel recommendations for out-of-town classmates<br>
+RSVP information<br>
+            </p>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Help Us Plan</h3>
+            <p class="card-text">
+                Do you have extra time? 
+                I might have some tasks for you.
+                (pick up my dry cleaning, wash my dog, etc.)
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="section" id="services">
+    <h2 class="section-title">Information</h2>
+    <div class="grid">
+        <div class="card">
+            <h3 class="card-title">Updates</h3>
+            <p class="card-text">
+                Get the latest on upcoming events.
+            </p>
+            <a href="updates.html" class="cta">
+                <span>Learn More</span>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Reunion Weekend</h3>
+            <p class="card-text">
+                Details for event weekend.
+            </p>
+            <a href="weekend.html" class="cta">
+                <span>Learn More</span>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Reunion Inspiration</h3>
+            <p class="card-text">
+                Get excited.
+            </p>
+            <a href="inspo.html" class="cta">
+                <span>Learn More</span>
+                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- Contact SECTION -->
+<section class="section" id="contact">
+    <h2 class="section-title">Contact</h2>
+    <div class="grid">
+       
+            
+                
+            
+            <div class="button-borders">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeqqALOjKueG4ZO3Q0A1LM2SlyfK0Ij4qybRr2eieZNSnpkYg/viewform?usp=dialog" class="primary-button" target="_blank">Join the Mailing list!</a>
+        </div>
+        
+            <div class="button-borders">
+                <button class="primary-button">::In-Development:: Register!</button>
+        </div>
+        <div class="button-borders">
+                <button class="primary-button">::In-Development:: Contact us!</button>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div>
+            <div class="logo" style="margin-bottom: 16px;">Tofutopia</div>
+            <p style="color: var(--color-text);">Tofutopia LLC. All rights reserved.</p>
+        </div>
+        
+        <div class="footer-links">
+            <a href="#privacy">Privacy</a>
+            <a href="#terms">Terms</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <div class="social-links">
+            <a href="#" class="social-icon" aria-label="Facebook">F</a>
+            <a href="#" class="social-icon" aria-label="Instagram">I</a>
+            <a href="#" class="social-icon" aria-label="Twitter">T</a>
+        </div>
+    </div>
+</footer>
+
+<!-- JAVASCRIPT -->
+<script>
+    function toggleMenu() {
+        const menu = document.querySelector('.mobile-menu');
+        const overlay = document.querySelector('.mobile-overlay');
+        menu.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Close mobile menu on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const menu = document.querySelector('.mobile-menu');
+            const overlay = document.querySelector('.mobile-overlay');
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+    });
+</script>
+
 </body>
 </html>
+</artifact>
