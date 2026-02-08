@@ -12,7 +12,7 @@ It's hard to believe it's been nearly 20 years since we graduated. We're looking
 
 ## Quick Details
 - **When:** Summer 2026 (specific date TBA)
-- **Where:** Bainbridge Island, WA
+- **Where:** Bainbridge Island, WA / Seattle, WA
 - **Who:** All Class of 2006 graduates and guests
 
 Check back here for updates as we finalize the details!
