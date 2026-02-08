@@ -88,25 +88,6 @@
         }
         */
 
-
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--color-secondary);
-            color: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-
-
         /* Menu Toggle Button */
         .menu-toggle {
             background: none;
@@ -419,8 +400,8 @@
         }
         /* Introduction Section */
         .introduction {
-            /* use translucent background-color instead of `opacity` so gaps remain visible */
-            background-color: rgba(25,28,64,0.7); /* equivalent to --color-primary with 0.7 alpha */
+            background: var(--color-primary);
+            opacity: 0.7;
             color: #fff;
             overflow: hidden;
             padding: 60px 0 0;
@@ -439,7 +420,7 @@
             }
         }
 
-        /* spacing between stacked introduction sections */
+        /* Add spacing between stacked introduction sections */
         .introduction + .introduction {
             margin-top: 100px;
         }
@@ -556,17 +537,9 @@
             margin-bottom: 0;
         }
         
-        /* @media (min-width: 782px) {
-            .introduction__side-text {
-                max-width: 430px;
-            }
-        } */
-
         @media (min-width: 782px) {
             .introduction__side-text {
-            max-width: 311px;
-            width: 85.2%;
-            margin: 0 0 20px;
+                max-width: 430px;
             }
         }
         
@@ -646,138 +619,71 @@
                 <div class="container">
                     <div class="hero__inner">
                         <div class="hero__text">
-                            <h1 class="hero__title">Reunion Updates!</h1>
+                            <h1 class="hero__title">Putting the Future in Place</h1>
                         </div>
 
                         <div class="hero__aside">
-                            <p class="hero__small-text">As they happen, I will update this page with details about the upcoming reunion weekend in blog post format.</p>
+                            <p class="hero__small-text">Your company is a pioneering developer focused on driving innovation and creating lasting impact across the industry.</p>
                         </div>
-
-                <!-- <div class="introduction__image-column">
-                    <div class="introduction__image">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH4CXFyHrlZn6SlBlludXFWwGgyIRMS0SINQ&s" alt="Modern office building exterior">
-                    </div>
-                </div> -->
-                        
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Blog Posts Container -->
-    <div id="posts-container"></div>
+    <!-- Introduction Section -->
+    <section class="introduction">
+        <div class="introduction__content">
+            <div class="introduction__header">
+                <div class="container">
+                    <h2 class="introduction__large-text">Addressing the climate emergency with urgency and intensity, we invest in innovation and design to deliver exceptional residential and commercial projects with lasting industry-wide impact.</h2>
+                </div>
+            </div>
+
+            <div class="introduction__content-row">
+                <div class="introduction__image-column">
+                    <div class="introduction__image">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Modern office building exterior">
+                    </div>
+                </div>
+
+                <div class="introduction__text-column">
+                    <div class="introduction__side-text">
+                        <p>Driven by our powerful ambition for change in the living environment, we champion new ways of living and working: nurturing imaginative ideas, refurbishing where we can, and always building responsibly by putting sustainable practices at the heart of what we do wherever possible.</p>
+                        <p>Leading the way as part of the global community, we take a holistic, long-term view of social, environmental as well as financial value, aiming to create wider social prosperity and make a positive difference to our planet by transforming 'real estate' into the valued places of the future.</p>
+                    </div>
+
+                    <div class="introduction__button-wrapper">
+                        <a href="#" class="introduction__button">
+                            About Us
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                <path d="M4.16675 10.125H15.8334M15.8334 10.125L10.0001 4.29169M15.8334 10.125L10.0001 15.9584" stroke="#F6FB7A" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script>
-        // Menu toggle logic
         let menuTimeout;
         const mainNav = document.querySelector('.main-navigation');
         const navMenu = document.querySelector('.nav-menu');
 
         mainNav.addEventListener('mouseenter', function() {
+            // Clear any existing timeout
             clearTimeout(menuTimeout);
+            // Show the menu
             navMenu.classList.add('show');
         });
 
         mainNav.addEventListener('mouseleave', function() {
+            // Hide the menu after 1 seconds
             menuTimeout = setTimeout(function() {
                 navMenu.classList.remove('show');
             }, 1000);
         });
-
-        // Blog post rendering
-        const postFiles = [
-            '_posts/01-03-2026-postthree.md',
-            '_posts/01-02-2026-posttwo.md',
-            '_posts/01-01-2026-postone.md'
-        ];
-
-        async function loadAndRenderPosts() {
-            const container = document.getElementById('posts-container');
-            const posts = [];
-
-            for (const file of postFiles) {
-                try {
-                    const response = await fetch(file);
-                    if (!response.ok) continue;
-                    const text = await response.text();
-                    const post = parsePost(text);
-                    posts.push(post);
-                } catch (error) {
-                    console.error(`Failed to load ${file}:`, error);
-                }
-            }
-
-            // Render posts newest-first (already sorted by filename order)
-            posts.forEach((post) => {
-                const excerpt = post.body.substring(0, 200) + (post.body.length > 200 ? '...' : '');
-                const section = document.createElement('section');
-                section.className = 'introduction';
-                let headerHTML = `<h2 class="introduction__large-text">${post.title}</h2>`;
-                if (post.subtitle) {
-                    headerHTML += `<p style="font-size: 1rem; color: #999; margin-top: 8px;">${post.subtitle}</p>`;
-                }
-                let dateHTML = '';
-                if (post.date) {
-                    dateHTML = `<div style="position: absolute; top: 20px; right: 20px; font-size: 0.9rem; color: #b29758;">${post.date}</div>`;
-                }
-                section.innerHTML = `
-                    <div class="introduction__content">
-                        <div class="introduction__header" style="position: relative;">
-                            ${dateHTML}
-                            <div class="container">
-                                ${headerHTML}
-                            </div>
-                        </div>
-                        <div class="introduction__text-column">
-                            <div class="introduction__side-text">
-                                <p>${excerpt}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(section);
-            });
-        }
-
-        function parsePost(markdown) {
-            const lines = markdown.split('\n');
-            let title = '';
-            let subtitle = '';
-            let date = '';
-            let body = '';
-            let inFrontmatter = false;
-            let frontmatterEnd = 0;
-
-            // Parse YAML frontmatter
-            if (lines[0].startsWith('---')) {
-                inFrontmatter = true;
-                for (let i = 1; i < lines.length; i++) {
-                    if (lines[i].startsWith('---')) {
-                        frontmatterEnd = i + 1;
-                        break;
-                    }
-                    if (lines[i].startsWith('title:')) {
-                        title = lines[i].replace('title:', '').trim().replace(/["']/g, '');
-                    }
-                    if (lines[i].startsWith('subtitle:')) {
-                        subtitle = lines[i].replace('subtitle:', '').trim().replace(/["']/g, '');
-                    }
-                    if (lines[i].startsWith('date:')) {
-                        date = lines[i].replace('date:', '').trim();
-                    }
-                }
-            }
-
-            body = lines.slice(frontmatterEnd).join('\n').trim();
-            // Remove markdown formatting for plain text
-            body = body.replace(/[#*_\[\]()]/g, '');
-
-            return { title: title || 'Untitled', subtitle, date, body };
-        }
-
-        // Load posts when DOM is ready
-        document.addEventListener('DOMContentLoaded', loadAndRenderPosts);
     </script>
 </body>
 </html>

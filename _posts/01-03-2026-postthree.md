@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Save the Date - Summer 2026"
+subtitle: "Mark your calendars for our 20-year reunion"
 date: 2024-12-20
 categories: reunion announcement
 ---

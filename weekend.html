@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Section Template</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;700&display=swap" rel="stylesheet">
+    <style>
+
+        :root {
+            --color-primary: #191c40;
+            --color-secondary: #c3c0c0;
+            --color-accent: #b29758;
+            --color-text: #1a1a1a;
+            --color-text-light: #b29758;
+            --max-width: 1440px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 96px;
+        }
+        /* Reset and Base Styles */
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Container */
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1324px;
+            width: 92.4%;
+        }
+        
+        /* Header Styles */
+        .site-header {
+            background: var(--color-primary);
+            border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            height: 80px;
+            left: 0;
+            padding: 0;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 2001;
+            opacity: 0.7;
+        }
+        
+        .site-header .container {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: space-between;
+        }
+        
+        .site-branding {
+            height: 47px;
+            width: 34px;
+        }
+        
+        .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-secondary);
+        }   
+        /*
+        .site-logo svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .site-logo path {
+            fill: #fff;
+            transition: fill 0.15s ease-in-out;
+        }
+        */
+
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            display: block;
+            height: 40px;
+            padding: 10px;
+            width: 40px;
+            position: relative;
+        }
+        
+        .menu-toggle span,
+        .menu-toggle span:before,
+        .menu-toggle span:after {
+            background: #fff;
+            border-radius: 2px;
+            display: block;
+            height: 1px;
+            margin: 0;
+            transition: transform 0.15s ease-in-out, width 0.15s ease-in-out;
+            width: 18px;
+        }
+        
+        .menu-toggle span {
+            position: relative;
+            text-indent: -9999px;
+            width: 9px;
+        }
+        
+        .menu-toggle span:before,
+        .menu-toggle span:after {
+            content: "";
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+        
+        .menu-toggle span:before {
+            top: -8px;
+        }
+        
+        .menu-toggle span:after {
+            bottom: -8px;
+        }
+        
+        .menu-toggle:hover span {
+            width: 18px;
+        }
+
+        /* Dropdown Menu */
+        .main-navigation {
+            position: relative;
+        }
+
+        .nav-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--color-secondary);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 150px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-navigation:hover .nav-menu {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 12px 20px;
+            color: var(--color-primary);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(25, 28, 64, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: transparent;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 80px 0 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            
+        }
+        
+        .hero__background {
+            height: 100%;
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: -1;
+        }
+        
+        .hero__image {
+            display: block;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            object-position: center bottom;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero__overlay {
+            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.3) 100%);
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+        
+        .hero__content {
+            align-items: stretch;
+            background: var(--color-primary);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: flex-end;
+            position: relative;
+            width: 100%;
+            z-index: 3;
+            opacity: 0.85;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__content {
+                background: none;
+                left: 0;
+                position: relative;
+                right: 0;
+                top: 0;
+            }
+            
+            .hero__content:after {
+                background: rgba(0, 0, 0, 0.9);
+                bottom: -68px;
+                content: "";
+                height: 100vh;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: auto;
+                width: 100%;
+                z-index: -1;
+            }
+        }
+        
+        .hero__content-wrapper {
+            border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            padding: 20px 0 26px;
+            width: 100%;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__content-wrapper {
+                border: none;
+                padding: 0;
+            }
+            
+            .hero__content-wrapper:after {
+                background: hsla(0, 0%, 100%, 0.3);
+                content: "";
+                height: 1px;
+                left: 0;
+                position: absolute;
+                top: calc(100% + 20px);
+                transform-origin: left;
+                width: 100%;
+            }
+        }
+        
+        .hero__inner {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: 100%;
+            justify-content: space-between;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__inner {
+                align-items: flex-end;
+                flex-direction: row;
+                justify-content: space-between;
+                position: relative;
+            }
+        }
+        
+        .hero__text {
+            max-width: 348px;
+            width: 95.34%;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__text {
+                max-width: 780px;
+                width: 58.91%;
+            }
+        }
+        
+        .hero__title {
+            color: var(--color-text-light);
+            font-size: clamp(1.71875rem, 13.99vw, 3.4375rem);
+            font-weight: 450;
+            letter-spacing: -0.03em;
+            line-height: 0.87;
+            margin: 0;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__title {
+                font-size: clamp(3.75rem, 8.33vw, 7.5rem);
+                letter-spacing: -0.025em;
+                line-height: 0.83;
+            }
+        }
+        
+        .hero__aside {
+            max-width: 311px;
+            width: 85.2%;
+            margin: 0 0 20px;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__aside {
+                margin: 0 0 0 auto;
+                max-width: 440px;
+                width: 33.23%;
+            }
+        }
+        
+        .hero__small-text {
+            color: hsla(0, 0%, 100%, 0.95);
+            font-size: clamp(0.5625rem, 4.58vw, 1.125rem);
+            font-weight: 450;
+            letter-spacing: -0.01em;
+            line-height: 1.11;
+            margin: 0;
+        }
+        
+        @media (min-width: 960px) {
+            .hero__small-text {
+                font-size: clamp(0.75rem, 1.67vw, 1.5rem);
+                letter-spacing: -0.02em;
+                line-height: 1.08;
+            }
+        }
+        
+        /* Skip Link */
+        .skip-link {
+            position: absolute !important;
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+            clip: rect(1px, 1px, 1px, 1px);
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+        
+        .skip-link:focus {
+            position: fixed !important;
+            background-color: #000;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            color: #fff;
+            font-weight: 600;
+            height: auto;
+            left: 50%;
+            outline: none;
+            padding: 15px 25px;
+            text-decoration: none;
+            top: 10px;
+            transform: translateX(-50%);
+            width: auto;
+            clip: auto !important;
+            clip-path: none !important;
+            overflow: visible !important;
+            z-index: 999999;
+        }
+        /* Introduction Section */
+        .introduction {
+            /* use translucent background-color instead of `opacity` so gaps remain visible */
+            background-color: rgba(25,28,64,0.7); /* equivalent to --color-primary with 0.7 alpha */
+            color: #fff;
+            overflow: hidden;
+            padding: 60px 0 0;
+            position: relative;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction {
+                padding: 100px 0 0;
+            }
+        }
+        
+        @media (min-width: 960px) {
+            .introduction {
+                padding: 168px 0 0;
+            }
+        }
+
+        /* spacing between stacked introduction sections */
+        .introduction + .introduction {
+            margin-top: 100px;
+        }
+        
+        .introduction__content {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .introduction__header {
+            padding-bottom: 40px;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction__header {
+                border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            }
+        }
+        
+        .introduction__large-text {
+            color: #fff;
+            font-size: 1.875rem;
+            line-height: 1;
+            margin: 0;
+            max-width: 584px;
+        }
+        
+        @media (min-width: 960px) {
+            .introduction__large-text {
+                font-size: 2.8125rem;
+            }
+        }
+        
+        .introduction__content-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1324px;
+            width: 92.4%;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction__content-row {
+                align-items: start;
+                flex: 1;
+            }
+        }
+        
+        .introduction__image-column {
+            order: 2;
+            padding-bottom: 2rem;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction__image-column {
+                border-right: 1px solid hsla(0, 0%, 100%, 0.3);
+                display: flex;
+                justify-content: end;
+                order: 1;
+                padding: 24px 24px 90px;
+                width: 50%;
+            }
+        }
+        
+        .introduction__image {
+            aspect-ratio: 16/9;
+            max-width: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction__image {
+                aspect-ratio: 3/4;
+            }
+        }
+        
+        .introduction__image img {
+            display: block;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .introduction__text-column {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            order: 1;
+            padding-bottom: 35px;
+        }
+        
+        @media (min-width: 782px) {
+            .introduction__text-column {
+                gap: 65px;
+                order: 2;
+                padding: 24px;
+                width: 50%;
+            }
+        }
+        
+        .introduction__side-text {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: 0.14px;
+            line-height: 1.6;
+        }
+        
+        .introduction__side-text p {
+            margin: 0 0 2em;
+        }
+        
+        .introduction__side-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* @media (min-width: 782px) {
+            .introduction__side-text {
+                max-width: 430px;
+            }
+        } */
+
+        @media (min-width: 782px) {
+            .introduction__side-text {
+            max-width: 311px;
+            width: 85.2%;
+            margin: 0 0 20px;
+            }
+        }
+        
+        .introduction__button {
+            align-items: center;
+            background: none;
+            border: none;
+            color: #f6fb7a;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 14px;
+            gap: 8px;
+            line-height: 200%;
+            padding: 0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .introduction__button svg {
+            height: 20px;
+            width: 20px;
+            fill: currentColor;
+            transition: all 0.3s ease;
+        }
+        
+        .introduction__button:hover svg {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a class="skip-link" href="#primary">Skip to content</a>
+
+    <!-- Header -->
+    <header id="masthead" class="site-header">
+        <div class="container">
+            <div class="site-branding">
+                <!-- <a href="#" class="site-logo" rel="home"> -->
+                    <div class="logo">BHS'06</div>
+                    <!-- <svg width="33" height="45" viewBox="0 0 34 47" fill="none" xmlns="http://www.w3.org/2000/svg"> -->
+                        
+                        
+                        <path d="M26.4128 10.9237V18.1026H22.4444V11.0035L15.5347 0.105469H20.1611L24.4585 7.32429L28.8257 0.105469H33.3225L26.4128 10.9237Z" fill="white"/>
+                        <path d="M8.5849 18.1026H0.0200195V0.105469H8.37549C12.0547 0.105469 14.3181 1.93012 14.3181 4.76181V4.81165C14.3181 6.84568 13.2412 7.97238 11.955 8.69028C14.0389 9.48793 15.3251 10.6944 15.3251 13.1073V13.1571C15.3251 16.4475 12.653 18.0927 8.5849 18.0927V18.1026ZM10.3796 5.41988C10.3796 4.23336 9.45236 3.56531 7.78725 3.56531H3.87875V7.37413H7.528C9.27288 7.37413 10.3796 6.8058 10.3796 5.46972V5.41988ZM11.3867 12.6187C11.3867 11.4123 10.4893 10.6645 8.45527 10.6645H3.87875V14.6228H8.5849C10.3298 14.6228 11.3867 14.0047 11.3867 12.6686V12.6187Z" fill="white"/>
+                        <path d="M17.08 26.3857H13.301L8.87405 39.8163L4.76611 26.3857H0.0898438L6.84004 46.2973L12.5034 41.0228L15.1357 33.3852L16.4917 37.3037L19.7023 34.3224L17.08 26.3857Z" fill="white"/>
+                        <path d="M27.7989 26.7765L24.7179 36.827L22.9032 31.3332L19.7026 34.3244L22.8235 43.3778H26.6223L33.3924 23.3965H31.4282L27.7989 26.7765Z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+
+            <nav id="site-navigation" class="main-navigation">
+                <button class="menu-toggle" aria-controls="mega-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+                    <span class="hamburger-icon">Toggle navigation</span>
+                </button>
+                
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="updates.html" class="nav-link">Updates</a>
+                    <a href="weekend.html" class="nav-link">Weekend</a>
+                    <a href="inspo.html" class="nav-link">Inspo</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="primary" class="hero hero--title">
+        <div class="hero__background">
+            <img class="hero__image" src="https://images.unsplash.com/photo-1582511014693-037abb6e6c96?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Modern building architecture">
+            <div class="hero__overlay"></div>
+        </div>
+
+        <div class="hero__content">
+            <div class="hero__content-wrapper">
+                <div class="container">
+                    <div class="hero__inner">
+                        <div class="hero__text">
+                            <h1 class="hero__title">Reunion Weekend Details!</h1>
+                        </div>
+
+                        <div class="hero__aside">
+                            <p class="hero__small-text">We're using this page to share details about the upcoming reunion weekend.</p>
+                        </div>
+
+                <!-- <div class="introduction__image-column">
+                    <div class="introduction__image">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH4CXFyHrlZn6SlBlludXFWwGgyIRMS0SINQ&s" alt="Modern office building exterior">
+                    </div>
+                </div> -->
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1 - what -->
+    <section class="introduction" id="what">
+        <div class="introduction__content">
+            <div class="introduction__header">
+                <div class="container">
+                    <h2 class="introduction__large-text">What!</h2>
+                </div>
+            </div>
+
+            <!-- <div class="introduction__content-row">
+                <div class="introduction__image-column">
+                    <div class="introduction__image">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Modern office building exterior">
+                    </div>
+                </div> -->
+
+                <div class="introduction__text-column">
+                    <div class="introduction__side-text">
+                        <p>We're looking to do a family friendly day in the park, where we can have a catered meal and a few activites.</p>
+                        <p>Additionally, we're looking to book a venue in Seattle for an evening that is less family oriented! (taxes, dry cleaning, pack pain...etc) </p>
+                    </div>
+
+                    <!-- <div class="introduction__button-wrapper">
+                        <a href="#" class="introduction__button">
+                            Talk to me.
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                <path d="M4.16675 10.125H15.8334M15.8334 10.125L10.0001 4.29169M15.8334 10.125L10.0001 15.9584" stroke="#F6FB7A" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div> -->
+                    <!-- <button class="btn-primary" style="font-size: 1.2rem; padding: 16px 32px;">
+                        Talk to me.
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2 - where -->
+    <section class="introduction" id="where">
+        <div class="introduction__content">
+            <div class="introduction__header">
+                <div class="container">
+                    <h2 class="introduction__large-text">Where!</h2>
+                </div>
+            </div>
+
+            <div class="introduction__content-row">
+                <!-- <div class="introduction__image-column">
+                    <div class="introduction__image">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Modern office building exterior">
+                    </div>
+                </div> -->
+
+                <div class="introduction__text-column">
+                    <div class="introduction__side-text">
+                        <p>Let's meet in on Bainbridge and Seattle!</p>
+                        <p>We're still figuring out budget and venue options, hold tight.</p>
+                    </div>
+
+
+                    <!-- <button class="btn-primary" style="font-size: 1.2rem; padding: 16px 32px;">
+                        Sign up Now!
+                    </button> -->
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2 - when -->
+    <section class="introduction" id="when">
+        <div class="introduction__content">
+            <div class="introduction__header">
+                <div class="container">
+                    <h2 class="introduction__large-text">When!</h2>
+                </div>
+            </div>
+
+            <!-- <div class="introduction__content-row">
+                <div class="introduction__image-column">
+                    <div class="introduction__image">
+                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Modern office building exterior">
+                    </div>
+                </div> -->
+
+                <div class="introduction__text-column">
+                    <div class="introduction__side-text">
+                        <p>I don't know!</p>
+                        <p>Help us figure out what weekend works for you! We have a few options in June and a few options in September, as we understand summer gets pretty busy.</p>
+                    </div>
+
+                    <!-- <div class="introduction__button-wrapper">
+                        <a href="#" class="introduction__button">
+                            About Us
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                <path d="M4.16675 10.125H15.8334M15.8334 10.125L10.0001 4.29169M15.8334 10.125L10.0001 15.9584" stroke="#F6FB7A" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div> -->
+
+                    <button class="btn-primary" style="font-size: 1.2rem; padding: 16px 32px;">
+                        This is where i'll put a survery link!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script>
+        let menuTimeout;
+        const mainNav = document.querySelector('.main-navigation');
+        const navMenu = document.querySelector('.nav-menu');
+
+        mainNav.addEventListener('mouseenter', function() {
+            // Clear any existing timeout
+            clearTimeout(menuTimeout);
+            // Show the menu
+            navMenu.classList.add('show');
+        });
+
+        mainNav.addEventListener('mouseleave', function() {
+            // Hide the menu after 1 seconds
+            menuTimeout = setTimeout(function() {
+                navMenu.classList.remove('show');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

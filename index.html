@@ -239,6 +239,7 @@
         padding: var(--spacing-lg) var(--spacing-md);
         position: relative;
         overflow: hidden;
+        margin-bottom: -96px;
     }
 
     .hero-content {
@@ -272,7 +273,7 @@
 
     /* ===== SECTIONS ===== */
     .section {
-        padding: var(--spacing-xl) var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-md);
         max-width: var(--max-width);
         margin: 0 auto;
     }
@@ -292,6 +293,7 @@
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     }
 
+    /* ===== CARD STYLES ===== */
     .card {
         background-color: var(--color-secondary);
         padding: var(--spacing-md);
@@ -321,9 +323,72 @@
         position: relative;
         z-index: 2;
     }
-
+  /*
     .card:hover {
         transform: translateY(-8px);
+    }
+*/
+    /* ===== CARD2 STYLES ===== */
+    .card2 {
+        --border-radius: 0.75rem;
+        --primary-color: #b29758;
+        --secondary-color: #404472;
+        width: 310px;
+        font-family: "Arial";
+        padding: 1rem;
+        cursor: pointer;
+        border-radius: var(--border-radius);
+        background: #f1f1f3;
+        box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+        position: relative;
+    }
+
+    .card2 > * + * {
+        margin-top: 1.1em;
+    }
+
+    .card2 .card2__content {
+        color: var(--secondary-color);
+        font-size: 0.86rem;
+        font-weight: bold;
+    }
+
+    .card2 .card2__title {
+        padding: 0;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .card2 .card2__arrow {
+        position: absolute;
+        background: var(--primary-color);
+        padding: 0.4rem;
+        border-top-left-radius: var(--border-radius);
+        border-bottom-right-radius: var(--border-radius);
+        bottom: 0;
+        right: 0;
+        transition: 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card2 svg {
+        transition: 0.2s;
+    }
+
+    /* card2 hover */
+    .card2:hover .card2__title {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+
+    .card2:hover .card2__arrow {
+        background: #404472;
+    }
+
+    .card2:hover .card2__arrow svg {
+        transform: translateX(3px);
     }
 
     .card-title {
@@ -334,7 +399,7 @@
     }
 
     .card-text {
-        color: var(--color-text);
+        color: var(--color-primary);
         line-height: 1.6;
         margin-bottom: var(--spacing-sm);
     }
@@ -568,10 +633,11 @@
             <div class="logo">BHS'06</div>
             <!-- Desktop Navigation -->
             <nav class="nav-desktop">
-            <a href="#home" class="nav-link">Home</a>
-            <a href="#about" class="nav-link">About</a>
-            <a href="#services" class="nav-link">Information</a>
-            <a href="#contact" class="nav-link">Contact</a>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="updates.html" class="nav-link">Updates</a>
+            <a href="weekend.html" class="nav-link">Weekend</a>
+            <a href="inspo.html" class="nav-link">Inspo</a>
+            <a href="contact.html" class="nav-link">Contact</a>
         </nav>
 
         <!-- Mobile Hamburger -->
@@ -587,11 +653,11 @@
 <div class="mobile-overlay" onclick="toggleMenu()"></div>
 <div class="mobile-menu">
     <nav class="mobile-nav">
-        <a href="#home" class="mobile-nav-link" onclick="toggleMenu()">Home</a>
-        <a href="#about" class="mobile-nav-link" onclick="toggleMenu()">Intro</a>
-        <a href="#services" class="mobile-nav-link" onclick="toggleMenu()">Info</a>
-        <a href="#contact" class="mobile-nav-link" onclick="toggleMenu()">Contact</a>
-        <button class="btn-primary" style="margin-top: 20px;">Get Started</button>
+        <a href="index.html" class="mobile-nav-link" onclick="toggleMenu()">Home</a>
+        <a href="updates.html" class="mobile-nav-link" onclick="toggleMenu()">Updates</a>
+        <a href="weekend.html" class="mobile-nav-link" onclick="toggleMenu()">Weekend</a>
+        <a href="inspo.html" class="mobile-nav-link" onclick="toggleMenu()">Inspo</a>
+        <!-- <button class="btn-primary" style="margin-top: 20px;">Get Started</button> -->
     </nav>
 </div>
 
@@ -655,34 +721,32 @@ RSVP information<br>
 <section class="section" id="services">
     <h2 class="section-title">Information</h2>
     <div class="grid">
-        <div class="card">
-            <h3 class="card-title">Updates</h3>
-            <p class="card-text">
+        <div class="card2">
+            <h3 class="card2__title">Updates</h3>
+            <p class="card2__content">
                 Get the latest on upcoming events.
             </p>
-            <a href="updates.html" class="cta">
-                <span>Learn More</span>
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <a href="updates.html" class="card2__arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>
         </div>
-        <div class="card">
-            <h3 class="card-title">Reunion Weekend</h3>
-            <p class="card-text">
+        <div class="card2">
+            <h3 class="card2__title">Reunion Weekend</h3>
+            <p class="card2__content">
                 Details for event weekend.
             </p>
-            <a href="weekend.html" class="cta">
-                <span>Learn More</span>
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <a href="weekend.html" class="card2__arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>
         </div>
-        <div class="card">
-            <h3 class="card-title">Reunion Inspiration</h3>
-            <p class="card-text">
-                Get excited.
+
+        <div class="card2">
+            <h3 class="card2__title">Reunion Inspiration</h3>
+            <p class="card2__content">
+                Get excited for this unforgettable celebration.
             </p>
-            <a href="inspo.html" class="cta">
-                <span>Learn More</span>
-                <svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <a href="inspo.html" class="card2__arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>
         </div>
     </div>
