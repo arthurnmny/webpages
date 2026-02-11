@@ -594,6 +594,17 @@
         .introduction__button:hover svg {
             transform: translateX(4px);
         }
+        /* Post excerpt / full text helpers */
+        .post-excerpt {
+            white-space: pre-wrap;
+            overflow: hidden;
+        }
+
+        .post-full {
+            white-space: pre-wrap;
+            display: none;
+            margin-top: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -710,33 +721,62 @@
 
             // Render posts newest-first (already sorted by filename order)
             posts.forEach((post) => {
-                const excerpt = post.body.substring(0, 200) + (post.body.length > 200 ? '...' : '');
-                const section = document.createElement('section');
-                section.className = 'introduction';
-                let headerHTML = `<h2 class="introduction__large-text">${post.title}</h2>`;
-                if (post.subtitle) {
-                    headerHTML += `<p style="font-size: 1rem; color: #999; margin-top: 8px;">${post.subtitle}</p>`;
-                }
-                let dateHTML = '';
-                if (post.date) {
-                    dateHTML = `<div style="position: absolute; top: 20px; right: 20px; font-size: 0.9rem; color: #b29758;">${post.date}</div>`;
-                }
-                section.innerHTML = `
-                    <div class="introduction__content">
-                        <div class="introduction__header" style="position: relative;">
-                            ${dateHTML}
-                            <div class="container">
-                                ${headerHTML}
+                    const excerpt = post.body.substring(0, 200) + (post.body.length > 200 ? '...' : '');
+                    const section = document.createElement('section');
+                    section.className = 'introduction';
+                    let headerHTML = `<h2 class="introduction__large-text">${post.title}</h2>`;
+                    if (post.subtitle) {
+                        headerHTML += `<p style="font-size: 1rem; color: #999; margin-top: 8px;">${post.subtitle}</p>`;
+                    }
+                    let dateHTML = '';
+                    if (post.date) {
+                        dateHTML = `<div style="position: absolute; top: 20px; right: 20px; font-size: 0.9rem; color: #b29758;">${post.date}</div>`;
+                    }
+
+                    // convert newlines to <br> for simple plain-text rendering
+                    const fullBodyHtml = post.body.replace(/\n/g, '<br>');
+
+                    section.innerHTML = `
+                        <div class="introduction__content">
+                            <div class="introduction__header" style="position: relative;">
+                                ${dateHTML}
+                                <div class="container">
+                                    ${headerHTML}
+                                </div>
+                            </div>
+                            <div class="introduction__text-column">
+                                <div class="introduction__side-text">
+                                    <p class="post-excerpt">${excerpt}</p>
+                                    <div class="post-full">${fullBodyHtml}</div>
+                                    <button class="introduction__button post-toggle" aria-expanded="false">Read more
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="introduction__text-column">
-                            <div class="introduction__side-text">
-                                <p>${excerpt}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(section);
+                    `;
+
+                    container.appendChild(section);
+
+                    // attach toggle behavior
+                    const btn = section.querySelector('.post-toggle');
+                    const postExcerpt = section.querySelector('.post-excerpt');
+                    const postFull = section.querySelector('.post-full');
+                    if (btn) {
+                        btn.addEventListener('click', () => {
+                            const expanded = btn.getAttribute('aria-expanded') === 'true';
+                            btn.setAttribute('aria-expanded', (!expanded).toString());
+                            if (expanded) {
+                                postFull.style.display = 'none';
+                                postExcerpt.style.display = 'block';
+                                btn.firstChild.textContent = 'Read more';
+                            } else {
+                                postFull.style.display = 'block';
+                                postExcerpt.style.display = 'none';
+                                btn.firstChild.textContent = 'Show less';
+                            }
+                        });
+                    }
             });
         }
 
