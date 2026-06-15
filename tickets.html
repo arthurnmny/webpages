@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reunion Tickets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #191c40;
+            --color-secondary: #c3c0c0;
+            --color-accent: #b29758;
+            --color-text: #1a1a1a;
+            --color-text-light: #b29758;
+            --max-width: 1440px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 96px;
+        }
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1324px;
+            width: 92.4%;
+        }
+        .site-header {
+            background: var(--color-primary);
+            border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            height: 80px;
+            left: 0;
+            padding: 0;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 2001;
+            opacity: 0.7;
+        }
+        .site-header .container {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: space-between;
+        }
+        .site-branding {
+            height: 47px;
+            width: 34px;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .menu-toggle {
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            display: block;
+            height: 40px;
+            padding: 10px;
+            width: 40px;
+            position: relative;
+        }
+        .menu-toggle span,
+        .menu-toggle span:before,
+        .menu-toggle span:after {
+            background: #fff;
+            border-radius: 2px;
+            display: block;
+            height: 1px;
+            margin: 0;
+            transition: transform 0.15s ease-in-out, width 0.15s ease-in-out;
+            width: 18px;
+        }
+        .menu-toggle span {
+            position: relative;
+            text-indent: -9999px;
+            width: 9px;
+        }
+        .menu-toggle span:before,
+        .menu-toggle span:after {
+            content: "";
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+        .menu-toggle span:before {
+            top: -8px;
+        }
+        .menu-toggle span:after {
+            bottom: -8px;
+        }
+        .menu-toggle:hover span {
+            width: 18px;
+        }
+        .main-navigation {
+            position: relative;
+        }
+        .nav-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--color-secondary);
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 150px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .main-navigation:hover .nav-menu,
+        .nav-menu.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .nav-link {
+            display: block;
+            padding: 12px 20px;
+            color: var(--color-primary);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(25, 28, 64, 0.1);
+        }
+        .hero {
+            background: transparent;
+            min-height: 80vh;
+            overflow: hidden;
+            padding: 80px 0 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .hero__content {
+            align-items: stretch;
+            background: var(--color-primary);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: flex-end;
+            position: relative;
+            width: 100%;
+            z-index: 3;
+            opacity: 0.95;
+        }
+        @media (min-width: 960px) {
+            .hero__content {
+                background: none;
+                left: 0;
+                position: relative;
+                right: 0;
+                top: 0;
+            }
+            .hero__content:after {
+                background: rgba(0, 0, 0, 0.9);
+                bottom: -68px;
+                content: "";
+                height: 100vh;
+                left: 0;
+                position: absolute;
+                right: 0;
+                top: auto;
+                width: 100%;
+                z-index: -1;
+            }
+        }
+        .hero__content-wrapper {
+            border-bottom: 1px solid hsla(0, 0%, 100%, 0.3);
+            padding: 20px 0 26px;
+            width: 100%;
+        }
+        @media (min-width: 960px) {
+            .hero__content-wrapper {
+                border: none;
+                padding: 0;
+            }
+            .hero__content-wrapper:after {
+                background: hsla(0, 0%, 100%, 0.3);
+                content: "";
+                height: 1px;
+                left: 0;
+                position: absolute;
+                top: calc(100% + 20px);
+                transform-origin: left;
+                width: 100%;
+            }
+        }
+        .hero__inner {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: 100%;
+            justify-content: space-between;
+        }
+        @media (min-width: 960px) {
+            .hero__inner {
+                align-items: flex-end;
+                flex-direction: row;
+                justify-content: space-between;
+                position: relative;
+            }
+        }
+        .hero__text {
+            max-width: 348px;
+            width: 95.34%;
+        }
+        @media (min-width: 960px) {
+            .hero__text {
+                max-width: 780px;
+                width: 58.91%;
+            }
+        }
+        .hero__title {
+            color: var(--color-text-light);
+            font-size: clamp(1.71875rem, 13.99vw, 3.4375rem);
+            font-weight: 450;
+            letter-spacing: -0.03em;
+            line-height: 0.87;
+            margin: 0;
+        }
+        @media (min-width: 960px) {
+            .hero__title {
+                font-size: clamp(3.75rem, 8.33vw, 7.5rem);
+                letter-spacing: -0.025em;
+                line-height: 0.83;
+            }
+        }
+        .hero__aside {
+            max-width: 311px;
+            width: 85.2%;
+            margin: 0 0 20px;
+        }
+        @media (min-width: 960px) {
+            .hero__aside {
+                margin: 0 0 0 auto;
+                max-width: 440px;
+                width: 33.23%;
+            }
+        }
+        .hero__small-text {
+            color: hsla(0, 0%, 100%, 0.95);
+            font-size: clamp(0.5625rem, 4.58vw, 1.125rem);
+            font-weight: 450;
+            letter-spacing: -0.01em;
+            line-height: 1.11;
+            margin: 0;
+        }
+        @media (min-width: 960px) {
+            .hero__small-text {
+                font-size: clamp(0.75rem, 1.67vw, 1.5rem);
+                letter-spacing: -0.02em;
+                line-height: 1.08;
+            }
+        }
+        .skip-link {
+            position: absolute !important;
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+            clip: rect(1px, 1px, 1px, 1px);
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+        .skip-link:focus {
+            position: fixed !important;
+            background-color: #000;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            color: #fff;
+            font-weight: 600;
+            height: auto;
+            left: 50%;
+            outline: none;
+            padding: 15px 25px;
+            text-decoration: none;
+            top: 10px;
+            transform: translateX(-50%);
+            width: auto;
+            clip: auto !important;
+            clip-path: none !important;
+            overflow: visible !important;
+            z-index: 999999;
+        }
+        .introduction {
+            background-color: rgba(25,28,64,0.7);
+            color: #fff;
+            overflow: hidden;
+            padding: 60px 0 0;
+            position: relative;
+        }
+        @media (min-width: 782px) {
+            .introduction {
+                padding: 100px 0 0;
+            }
+        }
+        @media (min-width: 960px) {
+            .introduction {
+                padding: 168px 0 0;
+            }
+        }
+        .introduction__content {
+            position: relative;
+            z-index: 3;
+        }
+        .introduction__large-text {
+            color: #fff;
+            font-size: 1.875rem;
+            line-height: 1;
+            margin: 0;
+            max-width: 584px;
+        }
+        @media (min-width: 960px) {
+            .introduction__large-text {
+                font-size: 2.8125rem;
+            }
+        }
+        .embed-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            margin-top: 40px;
+        }
+        .embed-wrapper iframe {
+            display: block;
+            width: 100%;
+            min-height: 850px;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#primary">Skip to content</a>
+    <header id="masthead" class="site-header">
+        <div class="container">
+            <div class="site-branding">
+                <div class="logo">BHS'06</div>
+            </div>
+            <nav id="site-navigation" class="main-navigation">
+                <button class="menu-toggle" aria-controls="mega-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+                    <span class="hamburger-icon">Toggle navigation</span>
+                </button>
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="updates.html" class="nav-link">Updates</a>
+                    <a href="weekend.html" class="nav-link">Weekend</a>
+                    <a href="inspo.html" class="nav-link">Inspo</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <section id="primary" class="hero hero--title">
+        <div class="hero__content">
+            <div class="hero__content-wrapper">
+                <div class="container">
+                    <div class="hero__inner">
+                        <div class="hero__text">
+                            <h1 class="hero__title">Tickets & Payment</h1>
+                        </div>
+                        <div class="hero__aside">
+                            <p class="hero__small-text">Use the checkout below to secure tickets for the reunion weekend!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="introduction">
+        <div class="introduction__content">
+            <div class="container">
+                <h2 class="introduction__large-text">Purchase Tickets</h2>
+                <div class="embed-wrapper">
+                    <iframe src="https://tixfox.co/embed/e/DFsCP9S2vb" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        let menuTimeout;
+        const mainNav = document.querySelector('.main-navigation');
+        const navMenu = document.querySelector('.nav-menu');
+        mainNav.addEventListener('mouseenter', function() {
+            clearTimeout(menuTimeout);
+            navMenu.classList.add('show');
+        });
+        mainNav.addEventListener('mouseleave', function() {
+            menuTimeout = setTimeout(function() {
+                navMenu.classList.remove('show');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
