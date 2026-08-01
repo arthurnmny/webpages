@@ -161,7 +161,9 @@
             background-color: rgba(25, 28, 64, 0.1);
         }
         .hero {
-            background: transparent;
+            background:
+                linear-gradient(90deg, rgba(25, 28, 64, 0.9) 0%, rgba(25, 28, 64, 0.45) 100%),
+                url("assets/bhsreunionbanner.jpg") center/cover no-repeat;
             min-height: 80vh;
             overflow: hidden;
             padding: 80px 0 0;
@@ -171,7 +173,7 @@
         }
         .hero__content {
             align-items: stretch;
-            background: var(--color-primary);
+            background: transparent;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -179,7 +181,6 @@
             position: relative;
             width: 100%;
             z-index: 3;
-            opacity: 0.95;
         }
         @media (min-width: 960px) {
             .hero__content {
