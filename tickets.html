@@ -417,6 +417,13 @@
             </div>
         </div>
     </section>
+    <section class="credit-card-note">
+        <div class="container">
+            <div class="note-box">
+                <p>Note: Credit card charges will come from TOFUTOPIA LLC!</p>
+            </div>
+        </div>
+    </section>
     <script>
         let menuTimeout;
         const mainNav = document.querySelector('.main-navigation');
@@ -431,5 +438,27 @@
             }, 1000);
         });
     </script>
+    <style>
+        .credit-card-note {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            margin-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .note-box {
+            background-color: #9aa7f0;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            padding: 16px 24px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(1, 2, 18, 0.05);
+        }
+        .note-box p {
+            color: #333;
+            font-size: 0.95rem;
+            margin: 0;
+            font-weight: 500;
+        }
+    </style>
 </body>
 </html>
