@@ -449,6 +449,17 @@
                 });
         }
         
+        // Turns a full URL into a short, readable label for the card back
+        // (e.g. "https://www.facebook.com/andy" -> "facebook.com").
+        // Falls back to the raw URL if it can't be parsed.
+        function getLinkLabel(url) {
+            try {
+                return new URL(url).hostname.replace(/^www\./, '');
+            } catch (e) {
+                return url;
+            }
+        }
+
         // Turns a short storage reference (e.g. "001.jpg") into a full public
         // Supabase Storage URL. Full URLs (e.g. from new submissions, which
         // already store the complete link) are passed through unchanged.
@@ -493,13 +504,6 @@
                                 <div class="back-location">📍 ${contact.City || 'Unknown'}</div>
                                 
                                 <div class="contact-links-back">
-                                    ${contact.Email ? `
-                                        <a href="mailto:${contact.Email}" class="contact-link-back">
-                                            <span>✉️</span>
-                                            <span>Email</span>
-                                        </a>
-                                    ` : ''}
-                                    
                                     ${contact.IG ? `
                                         <a href="https://instagram.com/${contact.IG}" target="_blank" class="contact-link-back">
                                             <span>📷</span>
@@ -517,14 +521,14 @@
                                     ${contact.Article1 ? `
                                         <a href="${contact.Article1}" target="_blank" class="contact-link-back">
                                             <span>📄</span>
-                                            <span>Article 1</span>
+                                            <span>${getLinkLabel(contact.Article1)}</span>
                                         </a>
                                     ` : ''}
                                     
                                     ${contact.Article2 ? `
                                         <a href="${contact.Article2}" target="_blank" class="contact-link-back">
                                             <span>📄</span>
-                                            <span>Article 2</span>
+                                            <span>${getLinkLabel(contact.Article2)}</span>
                                         </a>
                                     ` : ''}
                                 </div>

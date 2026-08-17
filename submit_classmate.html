@@ -206,7 +206,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* ===== BASEBALL CARD STYLING (MATCH CLASSMATES.HTML) ===== */
+        /* ===== YEARBOOK CARD STYLING (MATCH CLASSMATES.HTML) ===== */
         .flip-card {
             background-color: transparent;
             width: 240px; /* Slightly larger preview on submit page */
@@ -578,7 +578,7 @@
 <body>
     <div class="header">
         <h1>Join the Classmates Wall</h1>
-        <p>Fill out your details to generate your custom 2006 yearbook baseball card.</p>
+        <p>Fill out your details to generate your custom 2006 yearbook card.</p>
     </div>
 
     <div class="container">
@@ -633,7 +633,7 @@
                     <div class="file-upload-zone" id="dropzone">
                         <div class="file-upload-icon">📷</div>
                         <div class="file-upload-text" id="uploadLabel">
-                            Drag & drop your picture here or <span>browse</span>
+                            Click and add your picture here or <span>browse</span>
                         </div>
                         <input type="file" id="inputPhoto" accept="image/*">
                     </div>
@@ -657,7 +657,7 @@
                                 <div class="profile-initials" id="previewInitials">?</div>
                             </div>
                             <div class="card-title" id="cardName">Classmate Name</div>
-                            <div class="card-quote" id="cardQuote">"Your updated yearbook quote will show up right here on the front of your baseball card!"</div>
+                            <div class="card-quote" id="cardQuote">"Your updated yearbook quote will show up right here on the front of your yearbook card!"</div>
                         </div>
                     </div>
                     
@@ -723,8 +723,8 @@
 
     <script>
         // Supabase check
-        const supabase = window.getSupabaseClient();
-        if (!supabase) {
+        const supabaseClient = window.getSupabaseClient();
+        if (!supabaseClient) {
             console.warn("Supabase is not configured yet. Set credentials in assets/js/supabase-config.js to enable database submissions.");
         }
 
@@ -777,7 +777,7 @@
 
         inputQuote.addEventListener('input', (e) => {
             const val = e.target.value.trim();
-            cardQuote.textContent = val ? `"${val}"` : `"Your updated yearbook quote will show up right here on the front of your baseball card!"`;
+            cardQuote.textContent = val ? `"${val}"` : `"Your updated yearbook quote will show up right here on the front of your yearbook card!"`;
         });
 
         inputCity.addEventListener('input', (e) => {
@@ -872,7 +872,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            if (!supabase) {
+            if (!supabaseClient) {
                 showToast("Setup Required", "Please configure Supabase inside assets/js/supabase-config.js before submitting.", "error");
                 return;
             }
@@ -890,7 +890,7 @@
                     const fileName = `${cleanName}-${Date.now()}.${fileExt}`;
                     const filePath = `photos/${fileName}`;
 
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
                         .from('classmate-photos')
                         .upload(filePath, selectedFile, {
                             cacheControl: '3600',
@@ -902,7 +902,7 @@
                     }
 
                     // Get public URL
-                    const { data: publicUrlData } = supabase.storage
+                    const { data: publicUrlData } = supabaseClient.storage
                         .from('classmate-photos')
                         .getPublicUrl(filePath);
 
@@ -923,7 +923,7 @@
                     approved: false // approval needed by admin
                 };
 
-                const { error: dbError } = await supabase
+                const { error: dbError } = await supabaseClient
                     .from('classmates')
                     .insert([newClassmate]);
 

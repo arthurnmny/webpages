@@ -120,6 +120,18 @@
             min-height: 1em;
         }
 
+        .forgot-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #b29758;
+            font-size: 0.8em;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
         /* ---------- Sections ---------- */
 
         .section-title {
@@ -406,6 +418,7 @@
         <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
         <button onclick="handleLogin()">Log In</button>
         <div class="login-error" id="loginError"></div>
+        <a href="#" class="forgot-link" onclick="handleForgotPassword(); return false;">Forgot password?</a>
     </div>
 
     <div id="adminScreen" style="display:none;">
@@ -446,6 +459,29 @@
                 showAdmin();
             } else {
                 document.getElementById('loginScreen').style.display = 'block';
+            }
+        }
+
+        async function handleForgotPassword() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const errorEl = document.getElementById('loginError');
+            errorEl.style.color = '';
+
+            if (!email) {
+                errorEl.textContent = 'Enter your email above first, then click "Forgot password?"';
+                return;
+            }
+
+            const redirectUrl = window.location.origin + '/reset-password.html';
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: redirectUrl
+            });
+
+            if (error) {
+                errorEl.textContent = error.message;
+            } else {
+                errorEl.style.color = '#7dc383';
+                errorEl.textContent = 'Check your email for a reset link.';
             }
         }
 
@@ -506,6 +542,17 @@
                 return;
             }
             container.innerHTML = rows.map(row => buildCard(row)).join('');
+        }
+
+        // Turns a full URL into a short, readable label for the card back
+        // (e.g. "https://www.facebook.com/andy" -> "facebook.com").
+        // Falls back to the raw URL if it can't be parsed.
+        function getLinkLabel(url) {
+            try {
+                return new URL(url).hostname.replace(/^www\./, '');
+            } catch (e) {
+                return url;
+            }
         }
 
         // Turns a short storage reference (e.g. "001.jpg") into a full public
@@ -569,12 +616,12 @@
                                     ` : ''}
                                     ${row.article_1 ? `
                                         <a href="${row.article_1}" target="_blank" class="contact-link-back">
-                                            <span>📄</span><span>Article 1</span>
+                                            <span>📄</span><span>${getLinkLabel(row.article_1)}</span>
                                         </a>
                                     ` : ''}
                                     ${row.article_2 ? `
                                         <a href="${row.article_2}" target="_blank" class="contact-link-back">
-                                            <span>📄</span><span>Article 2</span>
+                                            <span>📄</span><span>${getLinkLabel(row.article_2)}</span>
                                         </a>
                                     ` : ''}
                                 </div>
