@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHS Class of 2006 - Admin Moderation Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <style>
+        :root {
+            --bg-color: #191c40;
+            --gold-accent: #b29758;
+            --text-silver: #c3c0c0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-silver);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== AUTH STYLE ===== */
+        .auth-container {
+            max-width: 450px;
+            width: 100%;
+            margin-top: 10vh;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            display: block;
+            /* Toggled via JS */
+        }
+
+        .auth-logo {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 5px;
+        }
+
+        .auth-subtitle {
+            font-size: 0.95em;
+            color: var(--text-silver);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #404472;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 10px rgba(178, 151, 88, 0.2);
+        }
+
+        .btn-action {
+            background-color: var(--gold-accent);
+            color: #111;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95em;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(178, 151, 88, 0.3);
+        }
+
+        .btn-action:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(178, 151, 88, 0.5);
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== MAIN DASHBOARD ===== */
+        .dash-container {
+            max-width: 1200px;
+            width: 100%;
+            display: none;
+            /* Toggled via JS */
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #404472;
+            width: 100%;
+        }
+
+        .dash-header h1 {
+            font-size: 2em;
+            color: var(--gold-accent);
+            font-weight: 700;
+        }
+
+        .btn-signout {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-silver);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .btn-signout:hover {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: rgba(244, 67, 54, 0.3);
+            color: var(--danger-color);
+        }
+
+        /* Tabs Navigation */
+        .dash-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-silver);
+            font-size: 1em;
+            font-weight: 600;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+        }
+
+        .tab-btn.active {
+            color: var(--gold-accent);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold-accent);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-badge {
+            background: #404472;
+            color: #fff;
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        .tab-btn.active .tab-badge {
+            background: var(--gold-accent);
+            color: #111;
+        }
+
+        /* Cards Layout */
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        /* Submissions Cards */
+        .sub-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .sub-card.removing {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+        }
+
+        .sub-card-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .sub-card-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #404472;
+        }
+
+        .sub-card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sub-card-initials {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--gold-accent);
+        }
+
+        .sub-card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sub-card-name {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sub-card-location {
+            font-size: 0.8em;
+            color: var(--text-silver);
+        }
+
+        .sub-card-quote {
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #d1d3e2;
+            font-style: italic;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid var(--gold-accent);
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .sub-card-info-table {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.8em;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .info-label {
+            color: var(--gold-accent);
+            font-weight: 600;
+        }
+
+        .info-val {
+            color: #fff;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .info-val a {
+            color: var(--text-silver);
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .info-val a:hover {
+            color: var(--gold-accent);
+        }
+
+        /* Action Buttons */
+        .sub-card-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 5px;
+        }
+
+        .btn-sub-action {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background-color: var(--success-color);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn-approve:hover {
+            background-color: #3d8b40;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.2);
+        }
+
+        .btn-delete:hover {
+            background-color: #c62828;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn-unapprove {
+            background-color: #ff9800;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.2);
+        }
+
+        .btn-unapprove:hover {
+            background-color: #e65100;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .loading-state,
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-silver);
+            font-size: 1.1em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+        }
+
+        .empty-icon {
+            font-size: 2.5em;
+        }
+
+        /* ===== TOAST ALERTS ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: rgba(25, 28, 64, 0.85);
+            border: 1px solid var(--glass-border);
+            border-left: 5px solid var(--gold-accent);
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: #fff;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 450px;
+            transform: translateX(120%);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: #4caf50;
+        }
+
+        .toast.error {
+            border-left-color: #f44336;
+        }
+
+        .toast-icon {
+            font-size: 1.3em;
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.95em;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 0.85em;
+            color: var(--text-silver);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 1. SIGN IN INTERFACE -->
+    <div class="auth-container" id="authBox">
+        <div class="auth-logo">BHS'06 Admin</div>
+        <div class="auth-subtitle">Sign in to moderate classmate card submissions</div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="inputEmail">Email Address</label>
+                <input type="email" id="inputEmail" class="form-control" placeholder="admin@email.com" required
+                    autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="inputPassword">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="••••••••" required
+                    autocomplete="current-password">
+            </div>
+            <button type="submit" id="loginBtn" class="btn-action">Sign In</button>
+        </form>
+    </div>
+
+    <!-- 2. MAIN MODERATION DASHBOARD -->
+    <div class="dash-container" id="dashBox">
+        <div class="dash-header">
+            <div>
+                <h1>Classmates Moderation Dashboard</h1>
+                <p id="adminStatus">Logged in as admin</p>
+            </div>
+            <button class="btn-signout" id="signOutBtn">Sign Out</button>
+        </div>
+
+        <!-- TABS BAR -->
+        <div class="dash-tabs">
+            <button class="tab-btn active" id="tabPendingBtn" onclick="switchTab('pending')">
+                Pending Approval <span class="tab-badge" id="badgePending">0</span>
+            </button>
+            <button class="tab-btn" id="tabApprovedBtn" onclick="switchTab('approved')">
+                Approved Live <span class="tab-badge" id="badgeApproved">0</span>
+            </button>
+        </div>
+
+        <!-- SUBMISSIONS GRID -->
+        <div class="submissions-grid" id="submissionsGrid">
+            <!-- Populated via Javascript -->
+        </div>
+    </div>
+
+    <script>
+        // Init Supabase client
+        const supabase = window.getSupabaseClient();
+
+        const authBox = document.getElementById('authBox');
+        const dashBox = document.getElementById('dashBox');
+        const loginForm = document.getElementById('loginForm');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const submissionsGrid = document.getElementById('submissionsGrid');
+        const badgePending = document.getElementById('badgePending');
+        const badgeApproved = document.getElementById('badgeApproved');
+        const adminStatus = document.getElementById('adminStatus');
+
+        let currentTab = 'pending'; // 'pending' or 'approved'
+        let currentSubmissions = [];
+
+        // Check authentication state on page load
+        async function checkSession() {
+            if (!supabase) {
+                showToast("Setup Required", "Please configure Supabase inside assets/js/supabase-config.js first.", "error");
+                return;
+            }
+
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (session) {
+                    showDashboard(session.user.email);
+                } else {
+                    showAuth();
+                }
+            } catch (err) {
+                console.error("Session check error:", err);
+                showAuth();
+            }
+        }
+
+        // Toggles display to Dashboard
+        function showDashboard(email) {
+            authBox.style.display = 'none';
+            dashBox.style.display = 'block';
+            adminStatus.textContent = `Logged in as ${email}`;
+            loadData();
+        }
+
+        // Toggles display to Login Screen
+        function showAuth() {
+            authBox.style.display = 'block';
+            dashBox.style.display = 'none';
+            submissionsGrid.innerHTML = '';
+        }
+
+        // --- AUTH FLOWS ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!supabase) {
+                showToast("Not Configured", "Please add Supabase credentials to assets/js/supabase-config.js", "error");
+                return;
+            }
+
+            const email = document.getElementById('inputEmail').value.trim();
+            const password = document.getElementById('inputPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Signing In...";
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                showToast("Welcome Back!", "Logged in successfully.", "success");
+                showDashboard(data.user.email);
+            } catch (err) {
+                showToast("Login Failed", err.message, "error");
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Sign In";
+            }
+        });
+
+        signOutBtn.addEventListener('click', async () => {
+            if (!supabase) return;
+            await supabase.auth.signOut();
+            showToast("Signed Out", "You have logged out.", "success");
+            showAuth();
+        });
+
+        // --- DATA LOAD FLOWS ---
+        async function loadData() {
+            if (!supabase) return;
+
+            submissionsGrid.innerHTML = `
+                <div class="loading-state">
+                    <span>⌛</span>
+                    <p>Loading classmate profiles...</p>
+                </div>
+            `;
+
+            try {
+                // Fetch ALL submissions (admin bypasses approved=true RLS filter)
+                const { data, error } = await supabase
+                    .from('classmates')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                currentSubmissions = data;
+
+                // Update Badges
+                const pendingCount = data.filter(c => !c.approved).length;
+                const approvedCount = data.filter(c => c.approved).length;
+
+                badgePending.textContent = pendingCount;
+                badgeApproved.textContent = approvedCount;
+
+                renderGrid();
+            } catch (err) {
+                showToast("Error Loading Profiles", err.message, "error");
+                submissionsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-icon">⚠️</span>
+                        <p>Failed to load submissions: ${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabPendingBtn').classList.toggle('active', tab === 'pending');
+            document.getElementById('tabApprovedBtn').classList.toggle('active', tab === 'approved');
+            renderGrid();
+        }
+
+        function renderGrid() {
+            submissionsGrid.innerHTML = '';
+
+            const filtered = currentSubmissions.filter(c => {
+                return currentTab === 'pending' ? !c.approved : c.approved;
+            });
+
+            if (filtered.length === 0) {
+                submissionsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-icon">🎉</span>
+                        <p>No ${currentTab} submissions found!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(classmate => {
+                const card = document.createElement('div');
+                card.className = 'sub-card';
+                card.id = `card-${classmate.id}`;
+
+                const initials = classmate.name ? classmate.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 3) : '?';
+                const quote = classmate.yearbook_quote || 'No yearbook quote provided.';
+
+                card.innerHTML = `
+                    <div class="sub-card-header">
+                        <div class="sub-card-avatar">
+                            ${classmate.image_url ?
+                        `<img src="${classmate.image_url}" alt="${classmate.name}">` :
+                        `<div class="sub-card-initials">${initials}</div>`
+                    }
+                        </div>
+                        <div class="sub-card-meta">
+                            <div class="sub-card-name" title="${classmate.name}">${classmate.name}</div>
+                            <div class="sub-card-location">📍 ${classmate.city || 'Unknown Location'}</div>
+                        </div>
+                    </div>
+
+                    <div class="sub-card-quote">"${quote}"</div>
+
+                    <div class="sub-card-info-table">
+                        <div class="info-row">
+                            <span class="info-label">Email:</span>
+                            <span class="info-val" title="${classmate.email}">${classmate.email}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">IG Handle:</span>
+                            <span class="info-val">${classmate.ig ? `@${classmate.ig}` : 'None'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Article 1:</span>
+                            <span class="info-val">${classmate.article_1 ? `<a href="${classmate.article_1}" target="_blank">Link</a>` : 'None'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Article 2:</span>
+                            <span class="info-val">${classmate.article_2 ? `<a href="${classmate.article_2}" target="_blank">Link</a>` : 'None'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Submitted:</span>
+                            <span class="info-val">${new Date(classmate.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-card-actions">
+                        ${currentTab === 'pending' ? `
+                            <button class="btn-sub-action btn-approve" onclick="approveClassmate('${classmate.id}')">
+                                <span>✅</span> Approve
+                            </button>
+                        ` : `
+                            <button class="btn-sub-action btn-unapprove" onclick="unapproveClassmate('${classmate.id}')">
+                                <span>🔄</span> Unapprove
+                            </button>
+                        `}
+                        <button class="btn-sub-action btn-delete" onclick="deleteClassmate('${classmate.id}', '${classmate.image_url || ''}')">
+                            <span>🗑️</span> Delete
+                        </button>
+                    </div>
+                `;
+
+                submissionsGrid.appendChild(card);
+            });
+        }
+
+        // --- DASHBOARD ACTIONS ---
+
+        async function approveClassmate(id) {
+            if (!supabase) return;
+
+            const cardEl = document.getElementById(`card-${id}`);
+
+            try {
+                const { error } = await supabase
+                    .from('classmates')
+                    .update({ approved: true })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast("Profile Approved!", "Classmate card is now live on the public page.", "success");
+
+                // Animate removal from current grid view
+                if (cardEl) {
+                    cardEl.classList.add('removing');
+                    setTimeout(() => {
+                        loadData();
+                    }, 500);
+                } else {
+                    loadData();
+                }
+            } catch (err) {
+                showToast("Approval Failed", err.message, "error");
+            }
+        }
+
+        async function unapproveClassmate(id) {
+            if (!supabase) return;
+
+            const cardEl = document.getElementById(`card-${id}`);
+
+            try {
+                const { error } = await supabase
+                    .from('classmates')
+                    .update({ approved: false })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast("Profile Retracted", "Profile has been moved back to the pending queue.", "success");
+
+                // Animate removal from current grid view
+                if (cardEl) {
+                    cardEl.classList.add('removing');
+                    setTimeout(() => {
+                        loadData();
+                    }, 500);
+                } else {
+                    loadData();
+                }
+            } catch (err) {
+                showToast("Unapprove Failed", err.message, "error");
+            }
+        }
+
+        async function deleteClassmate(id, imageUrl) {
+            if (!supabase) return;
+
+            if (!confirm("Are you sure you want to permanently delete this classmate profile? This cannot be undone.")) {
+                return;
+            }
+
+            const cardEl = document.getElementById(`card-${id}`);
+
+            try {
+                // 1. Delete photo from storage if they uploaded one
+                if (imageUrl) {
+                    try {
+                        // Extract filename path from URL
+                        // Expected URL shape: https://[project-id].supabase.co/storage/v1/object/public/classmate-photos/photos/[filename]
+                        const pathMatch = imageUrl.match(/\/classmate-photos\/(.+)$/);
+                        if (pathMatch && pathMatch[1]) {
+                            const filePath = decodeURIComponent(pathMatch[1]);
+                            const { error: storageErr } = await supabase.storage
+                                .from('classmate-photos')
+                                .remove([filePath]);
+
+                            if (storageErr) {
+                                console.warn("Failed to delete storage file, might have already been removed:", storageErr);
+                            }
+                        }
+                    } catch (storageErr) {
+                        console.warn("Storage deletion error (non-fatal):", storageErr);
+                    }
+                }
+
+                // 2. Delete database entry
+                const { error } = await supabase
+                    .from('classmates')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast("Deleted Successfully", "Profile has been permanently removed.", "success");
+
+                // Animate removal from current grid view
+                if (cardEl) {
+                    cardEl.classList.add('removing');
+                    setTimeout(() => {
+                        loadData();
+                    }, 500);
+                } else {
+                    loadData();
+                }
+            } catch (err) {
+                showToast("Deletion Failed", err.message, "error");
+            }
+        }
+
+        // --- Toast Alert Helper ---
+        function showToast(title, message, type = "success") {
+            const container = document.getElementById('toastContainer');
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            let icon = "🔔";
+            if (type === "success") icon = "✅";
+            if (type === "error") icon = "❌";
+
+            toast.innerHTML = `
+                <div class="toast-icon">${icon}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 50);
+
+            // Auto dismiss after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 4000);
+        }
+
+        // Run session check on initialization
+        checkSession();
+    </script>
+</body>
+
+</html>

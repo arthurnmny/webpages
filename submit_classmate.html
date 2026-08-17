@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHS Class of 2006 - Submit Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <style>
+        :root {
+            --bg-color: #191c40;
+            --card-front-bg: #ffffff;
+            --gold-accent: #b29758;
+            --text-silver: #c3c0c0;
+            --text-dark: #1a1a1a;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --gradient-back: linear-gradient(135deg, #404472 0%, #5c5f7c 50%, #b29758 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-silver);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .preview-column {
+                order: -1; /* Show card at the top on mobile */
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #404472;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: var(--gold-accent);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--text-silver);
+        }
+
+        /* ===== FORM STYLING ===== */
+        .form-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #404472;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 10px rgba(178, 151, 88, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        /* File Upload styling */
+        .file-upload-zone {
+            border: 2px dashed #404472;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .file-upload-zone:hover, .file-upload-zone.dragover {
+            border-color: var(--gold-accent);
+            background: rgba(178, 151, 88, 0.05);
+        }
+
+        .file-upload-zone input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            color: var(--gold-accent);
+        }
+
+        .file-upload-text {
+            font-size: 0.85em;
+            color: var(--text-silver);
+        }
+
+        .file-upload-text span {
+            color: var(--gold-accent);
+            font-weight: 600;
+        }
+
+        /* ===== PREVIEW COLUMN ===== */
+        .preview-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+
+        .preview-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* ===== BASEBALL CARD STYLING (MATCH CLASSMATES.HTML) ===== */
+        .flip-card {
+            background-color: transparent;
+            width: 240px; /* Slightly larger preview on submit page */
+            height: 334px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+        
+        .flip-card-front {
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
+            background: #fff;
+            padding: 0.6em;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-content-front {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .image-container {
+            background: #f1f1f1;
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .profile-initials {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--gold-accent);
+        }
+        
+        .card-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #000;
+            text-align: left;
+            margin-top: 12px;
+            padding: 0 0.5em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-quote {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+            text-align: left;
+            margin-top: 6px;
+            padding: 0 0.625em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .flip-card-back {
+            background: var(--gradient-back);
+            color: white;
+            transform: rotateY(180deg);
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            gap: 15px;
+        }
+        
+        .back-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .back-location {
+            font-size: 0.9em;
+            color: var(--text-silver);
+            margin-bottom: 5px;
+        }
+        
+        .contact-links-back {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .contact-link-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.85em;
+            font-weight: 500;
+            pointer-events: none; /* Make links non-clickable in preview mode */
+        }
+
+        .preview-instruction {
+            font-size: 0.85em;
+            color: var(--text-silver);
+            font-style: italic;
+            opacity: 0.7;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-submit {
+            background-color: var(--gold-accent);
+            color: #111;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1em;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(178, 151, 88, 0.3);
+        }
+
+        .btn-submit:hover {
+            background-color: transparent;
+            color: var(--gold-accent);
+            border-color: var(--gold-accent);
+            box-shadow: 0 4px 20px rgba(178, 151, 88, 0.1);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-submit:disabled {
+            background-color: #3b3d52;
+            color: #717387;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .back-cta-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: 30px;
+            color: var(--text-silver);
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-cta-btn:hover {
+            color: var(--gold-accent);
+        }
+
+        /* ===== GLASS TOAST NOTIFICATION ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: rgba(25, 28, 64, 0.85);
+            border: 1px solid var(--glass-border);
+            border-left: 5px solid var(--gold-accent);
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: #fff;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 450px;
+            transform: translateX(120%);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: #4caf50;
+        }
+
+        .toast.error {
+            border-left-color: #f44336;
+        }
+
+        .toast-icon {
+            font-size: 1.3em;
+        }
+
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.95em;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 0.85em;
+            color: var(--text-silver);
+        }
+
+        /* Glassmorphic Success Overlay */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(25, 28, 64, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-modal {
+            max-width: 500px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: translateY(30px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .success-overlay.active .success-modal {
+            transform: translateY(0);
+        }
+
+        .success-icon-large {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pop 0.6s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 15px;
+        }
+
+        .success-text {
+            color: var(--text-silver);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-done {
+            background-color: var(--gold-accent);
+            color: #111;
+            padding: 12px 30px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-done:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(178, 151, 88, 0.4);
+        }
+
+        /* Image sizing & formatting in preview */
+        #previewPhoto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Join the Classmates Wall</h1>
+        <p>Fill out your details to generate your custom 2006 yearbook baseball card.</p>
+    </div>
+
+    <div class="container">
+        <!-- LEFT COLUMN: FORM -->
+        <div class="form-card">
+            <form id="submissionForm">
+                <div class="form-group">
+                    <label for="inputName">Full Name *</label>
+                    <input type="text" id="inputName" class="form-control" placeholder="e.g., Jane Doe" required maxlength="50">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputCity">Current Location</label>
+                        <input type="text" id="inputCity" class="form-control" placeholder="e.g., Seattle, WA" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputIG">Instagram @</label>
+                        <input type="text" id="inputIG" class="form-control" placeholder="e.g., janedoe" maxlength="30">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputEmail">Email Address (Kept Private) *</label>
+                        <input type="email" id="inputEmail" class="form-control" placeholder="e.g., jane@email.com" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputLinkedIn">LinkedIn URL</label>
+                        <input type="url" id="inputLinkedIn" class="form-control" placeholder="https://linkedin.com/in/janedoe" maxlength="200">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputQuote">Updated Yearbook Quote *</label>
+                    <textarea id="inputQuote" class="form-control" placeholder="A fun fact, what you've been up to, or a nostalgic memory..." required maxlength="250"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputArticle1">Article / Web Link 1</label>
+                        <input type="url" id="inputArticle1" class="form-control" placeholder="https://..." maxlength="200">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputArticle2">Article / Web Link 2</label>
+                        <input type="url" id="inputArticle2" class="form-control" placeholder="https://..." maxlength="200">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div class="file-upload-zone" id="dropzone">
+                        <div class="file-upload-icon">📷</div>
+                        <div class="file-upload-text" id="uploadLabel">
+                            Drag & drop your picture here or <span>browse</span>
+                        </div>
+                        <input type="file" id="inputPhoto" accept="image/*">
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">Submit Card for Approval</button>
+            </form>
+        </div>
+
+        <!-- RIGHT COLUMN: LIVE CARD PREVIEW -->
+        <div class="preview-column">
+            <h2 class="preview-title">Live Preview</h2>
+            
+            <div class="flip-card" id="previewCard">
+                <div class="flip-card-inner">
+                    <!-- Front -->
+                    <div class="flip-card-front">
+                        <div class="card-content-front">
+                            <div class="image-container">
+                                <img id="previewPhoto" style="display: none;" src="" alt="Profile Image">
+                                <div class="profile-initials" id="previewInitials">?</div>
+                            </div>
+                            <div class="card-title" id="cardName">Classmate Name</div>
+                            <div class="card-quote" id="cardQuote">"Your updated yearbook quote will show up right here on the front of your baseball card!"</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Back -->
+                    <div class="flip-card-back">
+                        <div class="back-title" id="backCardName">Classmate Name</div>
+                        <div class="back-location" id="backCardCity">📍 Current Location</div>
+                        
+                        <div class="contact-links-back">
+                            <a href="#" class="contact-link-back" id="backCardEmail">
+                                <span>✉️</span>
+                                <span>Email</span>
+                            </a>
+                            <a href="#" class="contact-link-back" id="backCardIG" style="display: none;">
+                                <span>📷</span>
+                                <span id="backCardIGText">@Instagram</span>
+                            </a>
+                            <a href="#" class="contact-link-back" id="backCardLinkedIn" style="display: none;">
+                                <span>💼</span>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" class="contact-link-back" id="backCardArt1" style="display: none;">
+                                <span>📄</span>
+                                <span>Article 1</span>
+                            </a>
+                            <a href="#" class="contact-link-back" id="backCardArt2" style="display: none;">
+                                <span>📄</span>
+                                <span>Article 2</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-instruction">
+                <span>🔄</span> Hover or tap to flip card
+            </div>
+
+            <a href="classmates.html" class="back-cta-btn">
+                <svg viewBox="0 0 46 16" height="10" width="25" xmlns="http://www.w3.org/2000/svg" style="transform: scaleX(-1); fill: currentColor;">
+                    <path transform="translate(30)" d="M8,0,6.545,1.455l5.506,5.506H-30V9.039H12.052L6.545,14.545,8,16l8-8Z" fill="currentColor"></path>
+                </svg>
+                Back to Classmates Wall
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-modal">
+            <span class="success-icon-large">🎉</span>
+            <h2 class="success-title">Submission Received!</h2>
+            <p class="success-text">
+                Your BHS Class of 2006 yearbook baseball card has been created and submitted successfully.<br><br>
+                To prevent spam, your profile is currently **pending approval**. The page administrator will approve it shortly, and your card will then appear live on the wall!
+            </p>
+            <button class="btn-done" onclick="window.location.href='classmates.html'">Done</button>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Supabase check
+        const supabase = window.getSupabaseClient();
+        if (!supabase) {
+            console.warn("Supabase is not configured yet. Set credentials in assets/js/supabase-config.js to enable database submissions.");
+        }
+
+        // --- Live Preview Interactions ---
+        const inputName = document.getElementById('inputName');
+        const inputCity = document.getElementById('inputCity');
+        const inputIG = document.getElementById('inputIG');
+        const inputEmail = document.getElementById('inputEmail');
+        const inputLinkedIn = document.getElementById('inputLinkedIn');
+        const inputQuote = document.getElementById('inputQuote');
+        const inputArticle1 = document.getElementById('inputArticle1');
+        const inputArticle2 = document.getElementById('inputArticle2');
+        const inputPhoto = document.getElementById('inputPhoto');
+        const dropzone = document.getElementById('dropzone');
+
+        // Card Elements
+        const cardName = document.getElementById('cardName');
+        const backCardName = document.getElementById('backCardName');
+        const cardQuote = document.getElementById('cardQuote');
+        const backCardCity = document.getElementById('backCardCity');
+        const previewInitials = document.getElementById('previewInitials');
+        const backCardIG = document.getElementById('backCardIG');
+        const backCardIGText = document.getElementById('backCardIGText');
+        const backCardLinkedIn = document.getElementById('backCardLinkedIn');
+        const backCardArt1 = document.getElementById('backCardArt1');
+        const backCardArt2 = document.getElementById('backCardArt2');
+        const previewPhoto = document.getElementById('previewPhoto');
+        const uploadLabel = document.getElementById('uploadLabel');
+        const previewCard = document.getElementById('previewCard');
+
+        // Toggle card flip on click (for mobile experience)
+        previewCard.addEventListener('click', () => {
+            previewCard.classList.toggle('flipped');
+        });
+
+        // Event Listeners for Real-time Card Updates
+        inputName.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            cardName.textContent = val || "Classmate Name";
+            backCardName.textContent = val || "Classmate Name";
+            
+            // Calculate Initials
+            if (val) {
+                const initials = val.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 3);
+                previewInitials.textContent = initials;
+            } else {
+                previewInitials.textContent = "?";
+            }
+        });
+
+        inputQuote.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            cardQuote.textContent = val ? `"${val}"` : `"Your updated yearbook quote will show up right here on the front of your baseball card!"`;
+        });
+
+        inputCity.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            backCardCity.textContent = val ? `📍 ${val}` : "📍 Current Location";
+        });
+
+        inputIG.addEventListener('input', (e) => {
+            const val = e.target.value.trim().replace(/^@/, '');
+            if (val) {
+                backCardIG.style.display = 'flex';
+                backCardIGText.textContent = `@${val}`;
+            } else {
+                backCardIG.style.display = 'none';
+            }
+        });
+
+        inputLinkedIn.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            backCardLinkedIn.style.display = val ? 'flex' : 'none';
+        });
+
+        inputArticle1.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            backCardArt1.style.display = val ? 'flex' : 'none';
+        });
+
+        inputArticle2.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            backCardArt2.style.display = val ? 'flex' : 'none';
+        });
+
+        // Image Preview & Upload setup
+        let selectedFile = null;
+
+        function handleImage(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast("Invalid File", "Please select a valid image file.", "error");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                showToast("File Too Large", "Image size must be under 5MB.", "error");
+                return;
+            }
+
+            selectedFile = file;
+            uploadLabel.innerHTML = `Selected: <span>${file.name}</span>`;
+
+            // Display on preview card
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewPhoto.src = e.target.result;
+                previewPhoto.style.display = 'block';
+                previewInitials.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        inputPhoto.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImage(e.target.files[0]);
+            }
+        });
+
+        // Drag and Drop implementation
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleImage(files[0]);
+            }
+        });
+
+        // --- Supabase Submission Flow ---
+        const form = document.getElementById('submissionForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!supabase) {
+                showToast("Setup Required", "Please configure Supabase inside assets/js/supabase-config.js before submitting.", "error");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            try {
+                let photoUrl = null;
+
+                // 1. Upload photo to Supabase storage if selected
+                if (selectedFile) {
+                    const cleanName = inputName.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    const fileExt = selectedFile.name.split('.').pop();
+                    const fileName = `${cleanName}-${Date.now()}.${fileExt}`;
+                    const filePath = `photos/${fileName}`;
+
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('classmate-photos')
+                        .upload(filePath, selectedFile, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+
+                    if (uploadError) {
+                        throw new Error(`Photo upload failed: ${uploadError.message}`);
+                    }
+
+                    // Get public URL
+                    const { data: publicUrlData } = supabase.storage
+                        .from('classmate-photos')
+                        .getPublicUrl(filePath);
+
+                    photoUrl = publicUrlData.publicUrl;
+                }
+
+                // 2. Insert classmates record into DB
+                const newClassmate = {
+                    name: inputName.value.trim(),
+                    city: inputCity.value.trim() || null,
+                    email: inputEmail.value.trim(),
+                    linkedin: inputLinkedIn.value.trim() || null,
+                    ig: inputIG.value.trim().replace(/^@/, '') || null,
+                    yearbook_quote: inputQuote.value.trim(),
+                    article_1: inputArticle1.value.trim() || null,
+                    article_2: inputArticle2.value.trim() || null,
+                    image_url: photoUrl,
+                    approved: false // approval needed by admin
+                };
+
+                const { error: dbError } = await supabase
+                    .from('classmates')
+                    .insert([newClassmate]);
+
+                if (dbError) {
+                    throw new Error(`Database submission failed: ${dbError.message}`);
+                }
+
+                // 3. Show Success Modal
+                document.getElementById('successOverlay').classList.add('active');
+
+            } catch (err) {
+                console.error(err);
+                showToast("Submission Failed", err.message, "error");
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Card for Approval";
+            }
+        });
+
+        // --- Toast Alert Library ---
+        function showToast(title, message, type = "success") {
+            const container = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = "🔔";
+            if (type === "success") icon = "✅";
+            if (type === "error") icon = "❌";
+
+            toast.innerHTML = `
+                <div class="toast-icon">${icon}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 50);
+
+            // Auto dismiss after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHS Class of 2006 - Admin Review</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #191c40;
+            color: #c3c0c0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #404472;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            color: #b29758;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.05em;
+            color: #c3c0c0;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 0;
+            right: 20px;
+            background: none;
+            border: 1px solid #5c5f7c;
+            color: #c3c0c0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-family: inherit;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        /* ---------- Login ---------- */
+
+        .login-wrap {
+            max-width: 360px;
+            margin: 80px auto;
+            background: #22254a;
+            border-radius: 12px;
+            padding: 36px 30px;
+            text-align: center;
+        }
+
+        .login-wrap h2 {
+            color: #b29758;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .login-wrap input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #404472;
+            background: #16171d;
+            color: #c3c0c0;
+            font-family: inherit;
+            font-size: 0.95em;
+        }
+
+        .login-wrap input:focus {
+            outline: none;
+            border-color: #b29758;
+        }
+
+        .login-wrap button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: #b29758;
+            color: #191c40;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95em;
+            margin-top: 6px;
+        }
+
+        .login-wrap button:hover {
+            background: #c9ab68;
+        }
+
+        .login-error {
+            color: #e08585;
+            font-size: 0.85em;
+            margin-top: 12px;
+            min-height: 1em;
+        }
+
+        /* ---------- Sections ---------- */
+
+        .section-title {
+            font-size: 1.3em;
+            color: #b29758;
+            font-weight: 700;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px 15px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            height: 45px;
+            padding: 0 1rem;
+            border-radius: 12px;
+            border: 0;
+            box-shadow: 0 0 0 1.5px #2b2c37;
+            background-color: #16171d;
+            color: #bdbecb;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, 190px);
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #5c5f7c;
+            padding: 20px;
+            font-size: 0.95em;
+        }
+
+        /* ---------- Flip card (matches classmates.html) ---------- */
+
+        .admin-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 190px;
+            height: 264px;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+
+        .flip-card-front {
+            box-shadow: 0px 1px 13px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            padding: 0.5em;
+        }
+
+        .card-content-front {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .image-container {
+            background: #f1f1f1;
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-initials {
+            font-size: 3em;
+            font-weight: 700;
+            color: #b29758;
+        }
+
+        .card-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #000;
+            text-align: left;
+            margin-top: 10px;
+            padding: 0 0.625em;
+        }
+
+        .card-quote {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.75em;
+            color: #666;
+            font-style: italic;
+            text-align: left;
+            margin-top: 5px;
+            padding: 0 0.625em;
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, #404472 0%, #5c5f7c 50%, #b29758 100%);
+            color: white;
+            transform: rotateY(180deg);
+            box-shadow: 0px 1px 13px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 12px;
+        }
+
+        .back-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .back-location {
+            font-size: 0.8em;
+            color: #c3c0c0;
+            margin-bottom: 10px;
+        }
+
+        .contact-links-back {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .contact-link-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        /* ---------- Admin controls strip ---------- */
+
+        .admin-controls {
+            background: #22254a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            width: 190px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .toggle-label {
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .toggle-label.pending { color: #d8a24a; }
+        .toggle-label.approved { color: #7dc383; }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #5c5f7c;
+            transition: .25s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .25s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #7dc383;
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        .submitted-date {
+            font-size: 0.65em;
+            color: #8a8dae;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.3em;
+            color: #b29758;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen" class="login-wrap" style="display:none;">
+        <h2>Admin Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+        <button onclick="handleLogin()">Log In</button>
+        <div class="login-error" id="loginError"></div>
+    </div>
+
+    <div id="adminScreen" style="display:none;">
+        <div class="header">
+            <h1>Submission Review</h1>
+            <p>Preview each profile exactly as it will appear, then toggle it live</p>
+            <button class="logout-btn" onclick="handleLogout()">Log Out</button>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search name">
+        </div>
+
+        <div class="section-title">Pending Review (<span id="pendingCount">0</span>)</div>
+        <div id="pendingContainer" class="cards-container"></div>
+
+        <div class="section-title">Approved &amp; Live (<span id="approvedCount">0</span>)</div>
+        <div id="approvedContainer" class="cards-container"></div>
+    </div>
+
+    <div id="loadingScreen" class="loading">Loading...</div>
+
+    <script>
+        const supabaseClient = window.getSupabaseClient();
+        let allRows = [];
+
+        if (!supabaseClient) {
+            document.getElementById('loadingScreen').textContent =
+                'Supabase is not configured. Check assets/js/supabase-config.js.';
+        } else {
+            checkSession();
+        }
+
+        async function checkSession() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            document.getElementById('loadingScreen').style.display = 'none';
+            if (session) {
+                showAdmin();
+            } else {
+                document.getElementById('loginScreen').style.display = 'block';
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            errorEl.textContent = '';
+
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) {
+                errorEl.textContent = error.message;
+                return;
+            }
+            document.getElementById('loginScreen').style.display = 'none';
+            showAdmin();
+        }
+
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            location.reload();
+        }
+
+        function showAdmin() {
+            document.getElementById('adminScreen').style.display = 'block';
+            loadSubmissions();
+        }
+
+        async function loadSubmissions() {
+            const { data, error } = await supabaseClient
+                .from('classmates')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                alert('Failed to load submissions: ' + error.message);
+                return;
+            }
+            allRows = data;
+            renderAll(allRows);
+        }
+
+        function renderAll(rows) {
+            const pending = rows.filter(r => !r.approved);
+            const approved = rows.filter(r => r.approved);
+
+            document.getElementById('pendingCount').textContent = pending.length;
+            document.getElementById('approvedCount').textContent = approved.length;
+
+            renderContainer('pendingContainer', pending, 'No pending submissions.');
+            renderContainer('approvedContainer', approved, 'No approved profiles yet.');
+        }
+
+        function renderContainer(containerId, rows, emptyMessage) {
+            const container = document.getElementById(containerId);
+            if (rows.length === 0) {
+                container.innerHTML = `<div class="empty-state">${emptyMessage}</div>`;
+                return;
+            }
+            container.innerHTML = rows.map(row => buildCard(row)).join('');
+        }
+
+        // Turns a short storage reference (e.g. "001.jpg") into a full public
+        // Supabase Storage URL. Full URLs (e.g. from new submissions, which
+        // already store the complete link) are passed through unchanged.
+        function resolveImageUrl(value) {
+            if (!value) return '';
+            if (value.startsWith('http://') || value.startsWith('https://')) return value;
+            return `${window.SUPABASE_URL}/storage/v1/object/public/classmate-photos/${value}`;
+        }
+
+        function buildCard(row) {
+            const initials = row.name ? row.name.split(' ').map(n => n[0]).join('') : '?';
+            const quote = row.yearbook_quote || 'No quote available';
+            const imgSrc = resolveImageUrl(row.image_url);
+            const submittedDate = row.created_at
+                ? new Date(row.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+                : '';
+
+            return `
+                <div class="admin-card">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-content-front">
+                                    <div class="image-container">
+                                        ${imgSrc ? `
+                                            <img src="${imgSrc}"
+                                                alt="${row.name || ''}"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                                style="width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 4px; position: absolute; top: 0; left: 0;">
+                                            <div class="profile-initials" style="display: none;">${initials}</div>
+                                        ` : `
+                                            <div class="profile-initials">${initials}</div>
+                                        `}
+                                    </div>
+                                    <div class="card-title">${row.name || 'Unknown'}</div>
+                                    <div class="card-quote">"${quote}"</div>
+                                </div>
+                            </div>
+
+                            <div class="flip-card-back">
+                                <div class="back-title">${row.name || 'Unknown'}</div>
+                                <div class="back-location">📍 ${row.city || 'Unknown'}</div>
+
+                                <div class="contact-links-back">
+                                    ${row.email ? `
+                                        <a href="mailto:${row.email}" class="contact-link-back">
+                                            <span>✉️</span><span>Email</span>
+                                        </a>
+                                    ` : ''}
+                                    ${row.ig ? `
+                                        <a href="https://instagram.com/${row.ig}" target="_blank" class="contact-link-back">
+                                            <span>📷</span><span>@${row.ig}</span>
+                                        </a>
+                                    ` : ''}
+                                    ${row.linkedin ? `
+                                        <a href="${row.linkedin}" target="_blank" class="contact-link-back">
+                                            <span>💼</span><span>LinkedIn</span>
+                                        </a>
+                                    ` : ''}
+                                    ${row.article_1 ? `
+                                        <a href="${row.article_1}" target="_blank" class="contact-link-back">
+                                            <span>📄</span><span>Article 1</span>
+                                        </a>
+                                    ` : ''}
+                                    ${row.article_2 ? `
+                                        <a href="${row.article_2}" target="_blank" class="contact-link-back">
+                                            <span>📄</span><span>Article 2</span>
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-controls">
+                        <div class="toggle-row">
+                            <span class="toggle-label ${row.approved ? 'approved' : 'pending'}" id="label-${row.id}">
+                                ${row.approved ? 'Approved' : 'Pending'}
+                            </span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${row.approved ? 'checked' : ''}
+                                    onchange="toggleApproval('${row.id}', this)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="submitted-date">Submitted ${submittedDate}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function toggleApproval(id, checkboxEl) {
+            const newState = checkboxEl.checked;
+            checkboxEl.disabled = true;
+
+            const { error } = await supabaseClient
+                .from('classmates')
+                .update({ approved: newState })
+                .eq('id', id);
+
+            checkboxEl.disabled = false;
+
+            if (error) {
+                alert('Failed to update: ' + error.message);
+                checkboxEl.checked = !newState;
+                return;
+            }
+
+            // Refresh so the card moves to the correct section
+            loadSubmissions();
+        }
+
+        document.getElementById('searchBox') && document.getElementById('searchBox').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allRows.filter(r => (r.name || '').toLowerCase().includes(term));
+            renderAll(filtered);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHS Class of 2006 - Supabase Connection Tester</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <style>
+        :root {
+            --bg-color: #191c40;
+            --gold-accent: #b29758;
+            --text-silver: #c3c0c0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-silver);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #404472;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            color: var(--gold-accent);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--text-silver);
+        }
+
+        .status-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #404472;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-success { background: rgba(76, 175, 80, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .badge-warning { background: rgba(255, 152, 0, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-error { background: rgba(244, 67, 54, 0.15); color: var(--error); border: 1px solid var(--error); }
+        .badge-neutral { background: rgba(255, 255, 255, 0.1); color: var(--text-silver); }
+
+        .btn-run {
+            background-color: var(--gold-accent);
+            color: #111;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1em;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(178, 151, 88, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .btn-run:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(178, 151, 88, 0.5);
+        }
+
+        .btn-run:disabled {
+            background-color: #3b3d52;
+            color: #717387;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* ===== TEST LOGS ===== */
+        .logs-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logs-area {
+            background: #0f1026;
+            border: 1px solid #404472;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            height: 250px;
+            overflow-y: auto;
+            color: #d1d3e2;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+        }
+        
+        .log-entry.info { color: #d1d3e2; }
+        .log-entry.success { color: var(--success); }
+        .log-entry.warning { color: var(--warning); }
+        .log-entry.error { color: var(--error); font-weight: 700; }
+
+        .report-card {
+            background: rgba(244, 67, 54, 0.05);
+            border: 1px solid rgba(244, 67, 54, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .report-card.active {
+            display: block;
+        }
+
+        .report-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-desc {
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .sql-box {
+            background: #000;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: #a8ffb2;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+        }
+
+        .sql-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .sql-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: var(--text-silver);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s;
+        }
+
+        .back-link a:hover {
+            color: var(--gold-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Supabase Connection Diagnostics</h1>
+            <p>Diagnose and debug your BHS Class of 2006 database setup.</p>
+        </div>
+
+        <!-- CONFIG STATUS -->
+        <div class="status-box">
+            <div class="status-row">
+                <span class="status-label">Supabase URL</span>
+                <span class="status-value" id="statusUrl">Loading...</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">Supabase Public API Key</span>
+                <span class="status-value" id="statusKey">Loading...</span>
+            </div>
+            <div class="status-row">
+                <span class="status-label">SDK Initialization</span>
+                <span class="badge badge-neutral" id="statusInit">Pending Test</span>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <button class="btn-run" id="runBtn" onclick="runDiagnostics()">Run Connection Diagnostics</button>
+
+        <!-- TEST LOGS -->
+        <div class="logs-title">Diagnostic Logs</div>
+        <div class="logs-area" id="logsArea">Click "Run Connection Diagnostics" to begin testing your Supabase configuration.</div>
+
+        <!-- DYNAMIC REPORT CARD FOR SQL INSTRUCTIONS -->
+        <div class="report-card" id="reportCard">
+            <div class="report-title" id="reportTitle" style="color: var(--error)">⚠️ Database Schema Missing</div>
+            <div class="report-desc" id="reportDesc">
+                It looks like the <code>classmates</code> table does not exist in your Supabase project. To create the table and enable dynamic submissions, please copy this SQL script, go to your **Supabase Dashboard** -> **SQL Editor** -> **New Query**, paste it, and click **Run**.
+            </div>
+            <div class="sql-box" id="sqlBox">Loading SQL...</div>
+            <button class="sql-btn" onclick="copySQL()">Copy SQL Script</button>
+        </div>
+
+        <div class="back-link">
+            <a href="classmates.html">← Back to Classmates Wall</a> | <a href="admin.html">Go to Admin Login →</a>
+        </div>
+    </div>
+
+    <script>
+        // Load settings on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const url = window.SUPABASE_URL || '';
+            const key = window.SUPABASE_ANON_KEY || '';
+
+            if (!url || url === 'YOUR_SUPABASE_URL') {
+                document.getElementById('statusUrl').innerHTML = '<span style="color: var(--error)">Not Configured</span>';
+            } else {
+                document.getElementById('statusUrl').textContent = url;
+            }
+
+            if (!key || key === 'YOUR_SUPABASE_ANON_KEY') {
+                document.getElementById('statusKey').innerHTML = '<span style="color: var(--error)">Not Configured</span>';
+            } else {
+                // Obfuscate middle of key
+                const start = key.substring(0, 15);
+                const end = key.substring(key.length - 6);
+                document.getElementById('statusKey').textContent = `${start}...${end}`;
+            }
+        });
+
+        let logs = [];
+        const logsArea = document.getElementById('logsArea');
+        const runBtn = document.getElementById('runBtn');
+        const reportCard = document.getElementById('reportCard');
+        const sqlBox = document.getElementById('sqlBox');
+
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            let color = '#d1d3e2';
+            if (type === 'success') color = 'var(--success)';
+            if (type === 'warning') color = 'var(--warning)';
+            if (type === 'error') color = 'var(--error)';
+
+            logs.push(`<div class="log-entry" style="color: ${color}">[${timestamp}] ${message}</div>`);
+            logsArea.innerHTML = logs.join('');
+            logsArea.scrollTop = logsArea.scrollHeight;
+        }
+
+        const sqlScript = `-- Create classmates table
+CREATE TABLE IF NOT EXISTS public.classmates (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+    name TEXT NOT NULL,
+    city TEXT,
+    email TEXT,
+    ig TEXT,
+    article_1 TEXT,
+    article_2 TEXT,
+    yearbook_quote TEXT,
+    image_url TEXT,
+    approved BOOLEAN DEFAULT false NOT NULL
+);
+
+-- Enable Row Level Security (RLS) on classmates
+ALTER TABLE public.classmates ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS Policies for classmates table
+CREATE POLICY "Allow public inserts" ON public.classmates
+    FOR INSERT TO public WITH CHECK (true);
+
+CREATE POLICY "Allow public select for approved" ON public.classmates
+    FOR SELECT TO public USING (approved = true);
+
+CREATE POLICY "Allow admin select all" ON public.classmates
+    FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Allow admin update" ON public.classmates
+    FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow admin delete" ON public.classmates
+    FOR DELETE TO authenticated USING (true);
+
+-- Create classmates-photos public bucket
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('classmate-photos', 'classmate-photos', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Create storage policies for 'classmate-photos' bucket
+CREATE POLICY "Allow public uploads" ON storage.objects
+    FOR INSERT TO public WITH CHECK (bucket_id = 'classmate-photos');
+
+CREATE POLICY "Allow public viewing of photos" ON storage.objects
+    FOR SELECT TO public USING (bucket_id = 'classmate-photos');
+
+CREATE POLICY "Allow admin control of photos" ON storage.objects
+    FOR DELETE TO authenticated USING (bucket_id = 'classmate-photos');`;
+
+        sqlBox.innerText = sqlScript;
+
+        async function runDiagnostics() {
+            logs = [];
+            reportCard.classList.remove('active');
+            runBtn.disabled = true;
+            runBtn.textContent = 'Testing...';
+
+            const statusInit = document.getElementById('statusInit');
+            statusInit.className = 'badge badge-neutral';
+            statusInit.textContent = 'Testing...';
+
+            addLog("🚀 Starting connection diagnostic test suite...", "info");
+
+            // 1. Check SDK loaded
+            if (typeof supabase === 'undefined') {
+                addLog("❌ Supabase library CDN is NOT loaded. Make sure you are connected to the internet and haven't deleted the CDN link in your HTML.", "error");
+                statusInit.className = 'badge badge-error';
+                statusInit.textContent = 'SDK Missing';
+                finishTests();
+                return;
+            }
+            addLog("✅ Supabase Javascript SDK library verified successfully.", "success");
+
+            // 2. Check credentials configuration
+            const url = window.SUPABASE_URL;
+            const key = window.SUPABASE_ANON_KEY;
+
+            if (!url || url === 'YOUR_SUPABASE_URL' || !key || key === 'YOUR_SUPABASE_ANON_KEY') {
+                addLog("❌ Credentials missing. Please open 'assets/js/supabase-config.js' and fill in your Project URL and anon public Key.", "error");
+                statusInit.className = 'badge badge-error';
+                statusInit.textContent = 'Mismatched Config';
+                finishTests();
+                return;
+            }
+
+            if (url.startsWith("sb_publishable_") || url.startsWith("sb_secret_")) {
+                addLog("❌ Configuration Error: It looks like you pasted an API Key into the URL slot in 'supabase-config.js'. URL must start with 'https://'.", "error");
+                statusInit.className = 'badge badge-error';
+                statusInit.textContent = 'Mismatched Config';
+                finishTests();
+                return;
+            }
+
+            addLog("✅ Configuration file credentials syntax is valid.", "success");
+
+            // 3. Attempt to initialize client
+            const client = window.getSupabaseClient();
+            if (!client) {
+                addLog("❌ Failed to initialize Supabase client. See browser logs (F12) for detailed JavaScript errors.", "error");
+                statusInit.className = 'badge badge-error';
+                statusInit.textContent = 'Init Failed';
+                finishTests();
+                return;
+            }
+
+            addLog("✅ Supabase client initialized successfully. Client ready.", "success");
+            statusInit.className = 'badge badge-success';
+            statusInit.textContent = 'Client Active';
+
+            // 4. Test connection via querying classmates
+            addLog("🛰️ Querying classmates table in your database...", "info");
+            try {
+                const { data, error, status } = await client
+                    .from('classmates')
+                    .select('*')
+                    .limit(1);
+
+                if (error) {
+                    addLog(`❌ Database connection failed. Supabase returned status code ${status}. Error message: "${error.message}"`, "error");
+                    
+                    if (error.message.includes('relation "public.classmates" does not exist') || error.message.includes('relation "classmates" does not exist')) {
+                        addLog("💡 DIAGNOSIS: The 'classmates' table does not exist in your database schema! Please copy the SQL script below and execute it inside the Supabase SQL Editor.", "warning");
+                        showReportCard("⚠️ Database Schema Table Missing", "It looks like the 'classmates' table has not been created in your Supabase project. To build the database table and enable classmates dynamic registrations, please copy this SQL script, go to your Supabase Dashboard -> SQL Editor -> New Query, paste it, and click 'Run'.", "error");
+                    } else if (error.message.includes('Invalid API key') || error.message.includes('JWT')) {
+                        addLog("💡 DIAGNOSIS: Your API Key is invalid. Double check that you copied the 'anon public' key from your Supabase Dashboard API settings, not the secret_role or a publishable token of a different project.", "warning");
+                    } else if (status === 401 || error.message.includes('Security')) {
+                        addLog("💡 DIAGNOSIS: Database authentication / policy violation. Check if your Row Level Security (RLS) policies are active or if the anon key is blocked.", "warning");
+                    }
+                } else {
+                    addLog("✅ Table 'classmates' located. Database connected!", "success");
+                    addLog(`✅ Successfully read approved entries (returned ${data.length} records safely).`, "success");
+
+                    // 5. Check if photos storage bucket exists
+                    addLog("📁 Checking classmate-photos storage bucket status...", "info");
+                    
+                    const { data: bucketData, error: bucketError } = await client
+                        .storage
+                        .getBucket('classmate-photos');
+
+                    if (bucketError) {
+                        addLog(`⚠️ Warning: Could not locate storage bucket 'classmate-photos': "${bucketError.message}"`, "warning");
+                        addLog("💡 Storage uploads will fail. Ensure you run the SQL script in your Supabase SQL editor to create the bucket.", "warning");
+                        showReportCard("⚠️ Storage Bucket 'classmate-photos' Missing", "The storage bucket for profile photo uploads is missing. Please make sure to copy the SQL script below and run it in the Supabase SQL Editor to create it along with the appropriate RLS storage security policies.", "warning");
+                    } else {
+                        addLog("✅ Storage bucket 'classmate-photos' verified and is public.", "success");
+                        addLog("🎉 DIAGNOSTIC PASSED: Your Supabase integration is perfectly configured and fully operational! Submissions will now save correctly.", "success");
+                    }
+                }
+            } catch (connectionErr) {
+                addLog(`❌ Unhandled network connection crash: "${connectionErr.message}". Ensure your local computer has an active internet connection and that the Supabase endpoint is online.`, "error");
+            }
+
+            finishTests();
+        }
+
+        function finishTests() {
+            runBtn.disabled = false;
+            runBtn.textContent = 'Run Connection Diagnostics';
+        }
+
+        function showReportCard(title, desc, type = 'error') {
+            const rc = document.getElementById('reportCard');
+            const rt = document.getElementById('reportTitle');
+            const rd = document.getElementById('reportDesc');
+
+            rt.textContent = title;
+            rd.innerHTML = desc;
+            rt.style.color = type === 'error' ? 'var(--error)' : 'var(--warning)';
+            rc.style.borderColor = type === 'error' ? 'rgba(244, 67, 54, 0.2)' : 'rgba(255, 152, 0, 0.2)';
+            rc.style.background = type === 'error' ? 'rgba(244, 67, 54, 0.05)' : 'rgba(255, 152, 0, 0.05)';
+            rc.classList.add('active');
+        }
+
+        function copySQL() {
+            navigator.clipboard.writeText(sqlScript).then(() => {
+                alert("SQL script copied to clipboard successfully!");
+            }).catch(err => {
+                console.error("Failed to copy text:", err);
+            });
+        }
+    </script>
+</body>
+</html>
