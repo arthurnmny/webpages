@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducing the BHS 2006 Classmates Wall - BHS Reunion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #191c40;
+            --color-secondary: #c3c0c0;
+            --color-accent: #b29758;
+            --color-text: #1a1a1a;
+            --color-text-light: #b29758;
+            --max-width: 1440px;
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 48px;
+            --spacing-xl: 96px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-primary);
+            overflow-x: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== HEADER & NAVIGATION ===== */
+        .header {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            align-content: flex-start;
+            height: 40vh;
+            min-height: 300px;
+            max-height: 500px;
+            min-width: 300px;
+            color: #eee;
+            border-radius: 0 0 20px 20px;
+            text-shadow: 0 2px 6px #000a;
+            z-index: 1000;
+        }
+
+        .header:after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.12) 40%, rgba(27,32,48,1) 100%);
+        }
+
+        .header:before {
+            content: "";
+            width: 100%;
+            height: 200%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            background: #1B2030 url(https://images.unsplash.com/photo-1662371256693-040cd35c0956?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D) 50% 0 no-repeat;
+            background-size: 100%;
+            background-attachment: fixed;
+            animation: grow 360s linear 10ms infinite;
+            transition: all 0.4s ease-in-out;
+            z-index: -2;
+        }
+
+        .header a {
+            color: #eee;
+        }
+
+        .header-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, 80%);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: #eee;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.1em;
+            z-index: 50;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+
+        .nav-desktop {
+            display: none;
+            gap: var(--spacing-md);
+        }
+
+        .nav-link {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(11, 51, 51, 0.1);
+        }
+
+        /* ===== HAMBURGER MENU ===== */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            width: 30px;
+        }
+
+        .hamburger span {
+            height: 2px;
+            background-color: var(--color-secondary);
+            transition: all 0.3s;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background-color: var(--color-secondary);
+            padding: var(--spacing-lg) var(--spacing-md);
+            transition: right 0.4s ease;
+            z-index: 2000;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1999;
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+        }
+
+        .mobile-nav-link {
+            padding: var(--spacing-sm);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(11, 51, 51, 0.1);
+        }
+
+        /* ===== CONTENT ===== */
+        .blog-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+
+        .blog-header {
+            margin-bottom: var(--spacing-xl);
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: var(--spacing-lg);
+        }
+
+        .blog-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--color-accent);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .blog-meta {
+            color: var(--color-secondary);
+            font-size: 0.95rem;
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .blog-content {
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        .blog-content p {
+            margin-bottom: var(--spacing-md);
+            font-size: 1.05rem;
+        }
+
+        .blog-content h2 {
+            font-size: 1.8rem;
+            color: var(--color-accent);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .blog-content h3 {
+            font-size: 1.3rem;
+            color: var(--color-text-light);
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: var(--spacing-md) 0;
+        }
+
+        .feature-list li {
+            padding: var(--spacing-sm) 0 var(--spacing-sm) var(--spacing-lg);
+            position: relative;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-list li:before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+        }
+
+        .cta-section {
+            background: rgba(178, 151, 88, 0.1);
+            border-left: 4px solid var(--color-accent);
+            padding: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+            border-radius: 8px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            margin-top: var(--spacing-md);
+        }
+
+        .cta-button:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(178, 151, 88, 0.3);
+        }
+
+        .back-link {
+            color: var(--color-accent);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-xl);
+            transition: gap 0.3s;
+        }
+
+        .back-link:hover {
+            gap: var(--spacing-md);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background-color: var(--color-secondary);
+            padding: var(--spacing-lg) var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .footer-content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .header {
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+
+            .nav-desktop {
+                display: flex;
+            }
+
+            .hamburger {
+                display: none;
+            }
+
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        @keyframes grow {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">Introducing the Classmates Wall</div>
+            <div class="logo">BHS'06</div>
+            <!-- Desktop Navigation -->
+            <nav class="nav-desktop">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="classmates.html" class="nav-link">Classmates</a>
+                <a href="updates.html" class="nav-link">Updates</a>
+                <a href="weekend.html" class="nav-link">Weekend</a>
+                <a href="inspo.html" class="nav-link">Inspo</a>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-overlay" onclick="toggleMenu()"></div>
+    <div class="mobile-menu">
+        <nav class="mobile-nav">
+            <a href="index.html" class="mobile-nav-link" onclick="toggleMenu()">Home</a>
+            <a href="classmates.html" class="mobile-nav-link" onclick="toggleMenu()">Classmates</a>
+            <a href="updates.html" class="mobile-nav-link" onclick="toggleMenu()">Updates</a>
+            <a href="weekend.html" class="mobile-nav-link" onclick="toggleMenu()">Weekend</a>
+            <a href="inspo.html" class="mobile-nav-link" onclick="toggleMenu()">Inspo</a>
+        </nav>
+    </div>
+
+    <!-- BLOG CONTENT -->
+    <div class="blog-container">
+        <div class="blog-header">
+            <h1 class="blog-title">Introducing the Classmates Wall</h1>
+            <div class="blog-meta">
+                <span>📅 August 19, 2026</span>
+                <span>👥 BHS Class of 2006</span>
+            </div>
+        </div>
+
+        <div class="blog-content">
+            <p>
+                We're thrilled to announce the launch of the <strong>Classmates Wall</strong> — a brand new way to connect with your fellow Bainbridge High School graduates before, during, and after our 20-year reunion!
+            </p>
+
+            <h2>What's the Classmates Wall?</h2>
+            <p>
+                The Classmates Wall is an interactive digital gallery featuring custom yearbook cards created by members of the Class of 2006. Think of it as a modern twist on the classic yearbook — a place where you can:
+            </p>
+
+            <ul class="feature-list">
+                <li><strong>Create your own yearbook card</strong> with your name, current location, a favorite quote, and a profile photo</li>
+                <li><strong>Share your story</strong> with updated information, social media handles, and links to your latest accomplishments</li>
+                <li><strong>Browse classmates' profiles</strong> and reconnect with friends you haven't seen since graduation</li>
+                <li><strong>Find contact information</strong> for classmates you want to reconnect with before the reunion</li>
+            </ul>
+
+            <h2>How to Create Your Card</h2>
+            <p>
+                Getting started is easy! Here's what you need to do:
+            </p>
+
+            <h3>Step 1: Visit the Classmates Wall</h3>
+            <p>Head over to our <a href="classmates.html" style="color: var(--color-accent); font-weight: 600;">Classmates Wall page</a> and click the "Submit Your Card" button.</p>
+
+            <h3>Step 2: Fill Out Your Profile</h3>
+            <p>
+                Provide your information including:
+            </p>
+            <ul class="feature-list">
+                <li>Your full name</li>
+                <li>Current location</li>
+                <li>An updated yearbook quote or fun fact</li>
+                <li>Your Instagram handle (optional)</li>
+                <li>LinkedIn profile URL (optional)</li>
+                <li>Email address (kept private)</li>
+                <li>Links to articles, projects, or work you're proud of (optional)</li>
+                <li>A profile photo</li>
+            </ul>
+
+            <h3>Step 3: Preview Your Card</h3>
+            <p>
+                As you fill out your information, see a live preview of how your yearbook card will look. It features a custom flip animation — hover to see your profile information and contact details!
+            </p>
+
+            <h3>Step 4: Submit for Approval</h3>
+            <p>
+                Once you're happy with your card, submit it for approval. Your profile will appear on the wall shortly after our team reviews it to prevent spam.
+            </p>
+
+            <div class="cta-section">
+                <h3 style="margin-top: 0; color: #fff;">Ready to Create Your Card?</h3>
+                <p>
+                    Head to the Classmates Wall now and share your story with the Class of 2006. Let's catch up before the reunion!
+                </p>
+                <a href="classmates.html" class="cta-button">Create Your Card Now</a>
+            </div>
+
+            <h2>Why We Built This</h2>
+            <p>
+                As we approach our 20-year reunion, we wanted to create a way for classmates to reconnect and share what they've been up to since graduation. The Classmates Wall is more than just a directory — it's a celebration of where we all are now, how far we've come, and the connections that define our class.
+            </p>
+
+            <p>
+                Whether you're staying local, living abroad, starting a new business, raising a family, or on an entirely different path, we want to hear from you. Your story matters, and the Class of 2006 is excited to reconnect with you.
+            </p>
+
+            <h2>See You on the Wall!</h2>
+            <p>
+                We can't wait to see your card on the Classmates Wall. Don't be shy — share your story, reconnect with old friends, and help make our 20-year reunion unforgettable.
+            </p>
+
+            <p style="margin-top: var(--spacing-xl); color: var(--color-secondary); font-style: italic;">
+                Have questions about the Classmates Wall? <a href="contact.html" style="color: var(--color-accent); font-weight: 600;">Contact us here</a>.
+            </p>
+
+            <a href="updates.html" class="back-link">
+                ← Back to Updates
+            </a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="logo" style="margin-bottom: 16px;">BHS 2006 Reunion</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('.mobile-menu');
+            const overlay = document.querySelector('.mobile-overlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Close mobile menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const menu = document.querySelector('.mobile-menu');
+                const overlay = document.querySelector('.mobile-overlay');
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
